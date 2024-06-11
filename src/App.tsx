@@ -1,26 +1,33 @@
-import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+// import { ReactDOM } from "react-dom/client"
+import NavBar from "./component/navbar/navbar"
+import Dashboard from "./component/dashboard/dashboard"
+import Footer from "./component/footer/footer"
+import ShowOffer from './component/showoffer/showoffer';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className='flex flex-col items-center justify-between bg-red-100'
+        style={{
+          "background": "url('./background.png')",
+          "backgroundRepeat": "no-repeat",
+          "backgroundSize": "cover"
+        }}
+      >
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Dashboard/>}/>
+          <Route path="/showoffer" element={<ShowOffer/>}/>
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
+
+
