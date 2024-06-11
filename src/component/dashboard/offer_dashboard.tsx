@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Modal from 'react-modal';
 import MarketBtn from '../atmComponent/marketbtn';
-import CreateBtn from '../atmComponent/createBtn';
 import AddOfferModal from './addoffermodal';
 import CreateOfferModal from './createoffermodal';
 import { useNavigate } from 'react-router-dom';
+
+
 
 interface OfferDashboardProps {
   offerType: number;

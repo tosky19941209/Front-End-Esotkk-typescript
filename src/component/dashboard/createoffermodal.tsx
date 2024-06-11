@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import CreateBtn from '../atmComponent/createBtn';
-import { useNavigate } from 'react-router-dom';
+import useWeb3 from '../../hooks/useWeb3';
+
 interface CreateOfferModalProps {
   isCreateOfferModalOpen: boolean;
   setIsCreateOfferModalOpen: (isOpen: boolean) => void;
@@ -10,11 +10,23 @@ interface CreateOfferModalProps {
 }
 
 const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
+  const {chainId, estokkYamContract} = useWeb3();
+
+  const [networkName, setNetwork] = useState<string>("")
+
   const close = () => {
     props.setCreateOffer('none');
     props.setIsCreateOfferModalOpen(false);
   };
 
+  const CreateOffer = () => {
+
+  }
+
+  useEffect(()=>{
+    console.log('chainId=>>>>',chainId)
+  },[chainId])
+    
   return (
     <Modal
       ariaHideApp={false}
@@ -104,7 +116,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
 
         <button
           className="w-60 h-10 mt-3 border-[2px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] duration-300 focus:outline-none rounded"
-          onClick={close}
+          onClick={CreateOffer}
         >
           Add new Offer
         </button>
