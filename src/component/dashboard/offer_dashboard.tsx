@@ -120,7 +120,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
           {props.offerType === 2 && (
             <>
               <p className="text-center text-xl text-[#00b3ba]">Dex</p>
-              <p className="text-center text-xl text-[#00b3ba]">Dex</p>
               <table className="w-[100%] table">
                 <thead>
                   <tr>
