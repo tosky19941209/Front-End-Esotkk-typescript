@@ -9,42 +9,45 @@ import { Alchemy, Network } from "alchemy-sdk";
 interface OfferDashboardProps {
   offerType: number;
 }
+// const getTokenInfo = async (address: string) => {
+//   const config = {
+//     apiKey: "5ps2IIW-bbgZErbo9OKq7LBZR8G0t0i2",
+//     network: Network.ETH_SEPOLIA,
+//   };
 
-const getTokenInfo = async (address: string) => {
-  const config = {
-    apiKey: "5ps2IIW-bbgZErbo9OKq7LBZR8G0t0i2",
-    network: Network.ETH_SEPOLIA,
-  };
+//   const alchemy = new Alchemy(config);
 
-  const alchemy = new Alchemy(config);
+//   const metadata = await alchemy.core.getTokenMetadata(
+//     address
+//   );
+//   return metadata
+// }
+// const getTokenInfo = async (address: string) => {
+//   const result = await estokkYamContract.methods.tokenInfo(address).call()
+//   console.log("Result => ", result)
+// }
 
-  const metadata = await alchemy.core.getTokenMetadata(
-    address
-  );
-  return metadata
-}
+// const getOfferContent = async (offerContent: any) => {
+//   console.log("Offer Content => ", offerContent)
+//   const offerTokenInfo = await getTokenInfo(offerContent[0])
+//   const buyerTokenInfo = await getTokenInfo(offerContent[1])
+// const offerTokenName = offerTokenInfo.name
+// const buyerTokenName = buyerTokenInfo.name
+// const buyerAddress = offerContent[2]
+// const price = offerContent[4]
+// const amount = 100
 
-
-const getOfferContent = async (offerContent: any) => {
-  console.log("Offer Content => ", offerContent)
-  const offerTokenInfo = await getTokenInfo(offerContent[0])
-  const buyerTokenInfo = await getTokenInfo(offerContent[1])
-  const offerTokenName = offerTokenInfo.name
-  const buyerTokenName = buyerTokenInfo.name
-  const buyerAddress = offerContent[2]
-  const price = offerContent[4]
-  const amount = 100 
-
-  return {
-    offerToken: offerTokenName,
-    buyerToken: buyerTokenName,
-    buyer: buyerAddress,
-    price: price,
-    amount: amount
-  }
-}
+// return {
+//   offerToken: offerTokenName,
+//   buyerToken: buyerTokenName,
+//   buyer: buyerAddress,
+//   price: price,
+//   amount: amount
+// }
+// }
 
 const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
+  const { estokkYamContract, account } = useWeb3()
   const [isHover, setIsHover] = useState(false);
   const buttonClass =
     'w-[100%] h-10 flex items-center border-[1px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] rounded mt-2 mb-2 lg:mr-1 lg:ml-1 focus:outline-none duration-150';
@@ -59,7 +62,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
   const [isBtnPush3, setIsBtnPush3] = useState(false);
   const currentRef = useRef<HTMLButtonElement | null>(null);
 
-  const { estokkYamContract, account } = useWeb3()
+
   const [offerIDContent, setOfferIDContent] = useState<any>([])
 
   const array = [0, 1, 3, 5, 6, 3, 6, 6]
@@ -68,11 +71,24 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
   const ShowTotalOffer = async () => {
     try {
       const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
+
+      console.log("OfferCount : ", totalOfferCount)
       for (let i = 0; i < totalOfferCount; i++) {
         const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
-        arrayOffer.push(await getOfferContent(eachOfferContent))
-        setOfferIDContent(arrayOffer)
+        // arrayOffer.push(await getOfferContent(eachOfferContent))
+        const offerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[0]).call()
+        const buyerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[1]).call()
+        arrayOffer.push({
+          offerToken: offerToken[1],
+          buyerToken: buyerToken[1],
+          seller: eachOfferContent[2],
+          buyer: eachOfferContent[3],
+          price: eachOfferContent[4],
+          amount: eachOfferContent[5]
+        })
       }
+      console.log("SHow Offer =>", arrayOffer)
+      setOfferIDContent(arrayOffer)
     } catch (err) {
       console.log(err)
     }
@@ -158,23 +174,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    className="cursor-pointer"
-                    onClick={() => {
-                      navigate('/showoffer');
-                    }}
-                  >
-                    <td>171</td>
-                    <td>Token1</td>
-                    <td>USDC</td>
-                    <td>10%</td>
-                    <td>12%</td>
-                    <td>20%</td>
-                    <td>$51.35</td>
-                    <td>$60</td>
-                    <td>16.85%</td>
-                    <td>12.8893</td>
-                  </tr>
                   {
                     offerIDContent.map((item: any, index: any) => (
                       <tr
@@ -190,7 +189,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                         <td>12%</td>
                         <td>20%</td>
                         <td>{String(item.price)}</td>
-                        <td>14</td>
+                        <td>{String(Number(item.price) * 0.99)}</td>
                         <td>16.85%</td>
                         <td>12.8893</td>
                       </tr>
@@ -220,23 +219,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    className="cursor-pointer"
-                    onClick={() => {
-                      navigate('/showoffer');
-                    }}
-                  >
-                    <td>371</td>
-                    <td>Token1</td>
-                    <td>USDC</td>
-                    <td>10%</td>
-                    <td>12%</td>
-                    <td>20%</td>
-                    <td>$51.35</td>
-                    <td>$60</td>
-                    <td>16.85%</td>
-                    <td>12.8893</td>
-                  </tr>
+
 
                 </tbody>
               </table>
