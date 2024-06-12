@@ -22,6 +22,12 @@ const Filter: React.FC = () => {
           Show only Whitelisted properties' offers
         </label>
       </div>
+
+
+
+      <div>
+
+      </div>
     </div>
   );
 };

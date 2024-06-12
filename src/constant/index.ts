@@ -1,1 +1,1 @@
-export const estokkYamContractAddress = '0x7215c347458DB86531f3c4Cae1c60c0B93e435Ce';
+export const estokkYamContractAddress = '0xb8c08a9f7a4efcd4b3a460b8b45236d1a86d1b64';
