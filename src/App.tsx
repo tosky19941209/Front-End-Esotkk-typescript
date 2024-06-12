@@ -4,8 +4,8 @@ import ProjectRouter from './router';
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider, darkTheme, connectorsForWallets } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, base, sepolia } from 'wagmi/chains';
-import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
+import { mainnet, polygon, optimism, arbitrum, base, sepolia, gnosis } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { phantomWallet, rainbowWallet, walletConnectWallet, metaMaskWallet, coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 import { Web3Provider } from './contexts/web3Context';
 import 'toastr/build/toastr.min.css';
@@ -16,7 +16,7 @@ function App() {
   const config = getDefaultConfig({
     appName: 'My RainbowKit App',
     projectId: '57826bfdbc6cd9752e192a296fbbd40d',
-    chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
+    chains: [mainnet, polygon, optimism, arbitrum, base, sepolia, gnosis],
     ssr: true,
   });
 
