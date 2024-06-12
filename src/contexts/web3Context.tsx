@@ -13,6 +13,7 @@ import { useEthersProvider, useEthersSigner } from '../utils/wagmi-ethers';
 import { Web3ContextType } from '../types';
 import EstokkYamContractAbi from '../contract/EstokkYam.json';
 import { estokkYamContractAddress } from '../constant';
+import { Container } from 'postcss';
 
 declare let window: any;
 const Web3Context = createContext<Web3ContextType | null>(null);
@@ -27,7 +28,6 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
 
     const [provider, setProvider] = useState<ContractRunner>(defaultProvider);
     const [estokkYamContract, setEstokkYamContract] = useState<Contract>({} as Contract);
-
     const init = useCallback(async () => {
         try {
             if (!isConnected || !ethersProvider) {
