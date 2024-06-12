@@ -2,6 +2,7 @@ import NavBar from "../component/navbar/navbar";
 import Dashboard from "../component/dashboard/dashboard"
 import Footer from "../component/footer/footer"
 import ShowOffer from '../component/showoffer/showoffer';
+import Admin from "../component/adminpage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 function ProjectRouter() {
@@ -18,6 +19,7 @@ function ProjectRouter() {
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/showoffer" element={<ShowOffer />} />
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
                 <Footer />
             </div>
