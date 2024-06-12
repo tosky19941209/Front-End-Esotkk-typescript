@@ -4,11 +4,44 @@ import AddOfferModal from './addoffermodal';
 import CreateOfferModal from './createoffermodal';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
-import { convertToObject } from 'typescript';
-
+import { Alchemy, Network } from "alchemy-sdk";
 
 interface OfferDashboardProps {
   offerType: number;
+}
+
+const getTokenInfo = async (address: string) => {
+  const config = {
+    apiKey: "5ps2IIW-bbgZErbo9OKq7LBZR8G0t0i2",
+    network: Network.ETH_SEPOLIA,
+  };
+
+  const alchemy = new Alchemy(config);
+
+  const metadata = await alchemy.core.getTokenMetadata(
+    address
+  );
+  return metadata
+}
+
+
+const getOfferContent = async (offerContent: any) => {
+  console.log("Offer Content => ", offerContent)
+  const offerTokenInfo = await getTokenInfo(offerContent[0])
+  const buyerTokenInfo = await getTokenInfo(offerContent[1])
+  const offerTokenName = offerTokenInfo.name
+  const buyerTokenName = buyerTokenInfo.name
+  const buyerAddress = offerContent[2]
+  const price = offerContent[4]
+  const amount = 100 
+
+  return {
+    offerToken: offerTokenName,
+    buyerToken: buyerTokenName,
+    buyer: buyerAddress,
+    price: price,
+    amount: amount
+  }
 }
 
 const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
@@ -27,17 +60,29 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
   const currentRef = useRef<HTMLButtonElement | null>(null);
 
   const { estokkYamContract, account } = useWeb3()
+  const [offerIDContent, setOfferIDContent] = useState<any>([])
 
-  const TotalOfferCount = async () => {
-    console.log("Get OfferCount => ", await estokkYamContract.methods.getOfferCount().call())
+  const array = [0, 1, 3, 5, 6, 3, 6, 6]
+  let arrayOffer: any = []
+
+  const ShowTotalOffer = async () => {
+    try {
+      const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
+      for (let i = 0; i < totalOfferCount; i++) {
+        const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
+        arrayOffer.push(await getOfferContent(eachOfferContent))
+        setOfferIDContent(arrayOffer)
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-
   useEffect(() => {
+    ShowTotalOffer()
     if (createoffer === 'sell' || createoffer === 'buy' || createoffer === 'exchange') {
       setCreateOfferTitle(createoffer);
       setIsCreateOfferModalOpen(true);
-
     } else {
       setCreateOffer('none');
     }
@@ -51,6 +96,13 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const first = offerIDContent
+      console.log("Content: ", first)
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [offerIDContent]); // Empty dependency array to run the effect only once on mount
 
   return (
     <div className="flex flex-col w-[100%] justify-between">
@@ -124,6 +176,25 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     <td>12.8893</td>
                   </tr>
                   {
+                    offerIDContent.map((item: any, index: any) => (
+                      <tr
+                        className="cursor-pointer"
+                        onClick={() => {
+                          navigate('/showoffer');
+                        }}
+                      >
+                        <td>{index}</td>
+                        <td>{item.offerToken}</td>
+                        <td>{item.buyerToken}</td>
+                        <td>10%</td>
+                        <td>12%</td>
+                        <td>20%</td>
+                        <td>{String(item.price)}</td>
+                        <td>14</td>
+                        <td>16.85%</td>
+                        <td>12.8893</td>
+                      </tr>
+                    ))
 
                   }
                 </tbody>
@@ -166,6 +237,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     <td>16.85%</td>
                     <td>12.8893</td>
                   </tr>
+
                 </tbody>
               </table>
             </>
@@ -189,6 +261,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                 Add Offer
               </button>
             </div>
+
           )}
         </div>
 
