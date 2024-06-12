@@ -40,6 +40,9 @@ function Admin() {
 
         const result: any = await estokkYamContract.methods.toggleWhitelistWithType(token_address, token_type).send({from: account})
         console.log("Result Toggle ===>", result)
+
+
+        console.log("Token Type =>", await estokkYamContract.methods.getTokenType(real_token).call())
     }
 
     const getAdmin = async () => {
@@ -55,14 +58,14 @@ function Admin() {
         const buyer: string = "0x0000000000000000000000000000000000000000"
         const price: Number = 5
         const amount: Number = 100
-        console.log(offer_token, buyer_token, buyer, price, amount)
-        const result: any = await estokkYamContract.methods.createOffer(offer_token, buyer_token, buyer, price, amount).call();
+        const result: any = await estokkYamContract.methods.createOffer(offer_token, buyer_token, buyer, price, amount).send({from: account});
         console.log("result => ", result)
     }
 
     const showOffer = async () => {
         console.log("ShowOffer => ", await estokkYamContract.methods.showOffer(0).call())
-        console.log("GetTokenType => ", await estokkYamContract.methods.getTokenType(real_token))
+        console.log("Get OfferCount => ", await estokkYamContract.methods.getOfferCount().call())
+        // console.log("GetTokenType => ", await estokkYamContract.methods.getTokenType(real_token).call())
     }
 
     useEffect(() => {
