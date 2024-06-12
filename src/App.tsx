@@ -8,6 +8,8 @@ import { mainnet, polygon, optimism, arbitrum, base, sepolia } from 'wagmi/chain
 import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
 import { phantomWallet, rainbowWallet, walletConnectWallet, metaMaskWallet, coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 import { Web3Provider } from './contexts/web3Context';
+import 'toastr/build/toastr.min.css';
+
 function App() {
   const queryClient = new QueryClient();
 

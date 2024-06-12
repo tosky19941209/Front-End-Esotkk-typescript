@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import useWeb3 from '../../hooks/useWeb3';
-
+import toastr from 'toastr';
 interface CreateOfferModalProps {
   isCreateOfferModalOpen: boolean;
   setIsCreateOfferModalOpen: (isOpen: boolean) => void;
@@ -31,9 +31,14 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
   };
 
   const CreateOffer = async () => {
-    const result: any = await estokkYamContract.methods.createOffer(offerToken, buyerToken, buyer, offerPriceUsdc, offerQuantity).send({ from: account })
-    console.log("Result Offer => ", result)
-    close()
+    try {
+      const result: any = await estokkYamContract.methods.createOffer(offerToken, buyerToken, buyer, offerPriceUsdc, offerQuantity).send({ from: account })
+      console.log("Result Offer => ", result)
+      toastr.success("Offer is created Successfully!")
+      close()
+    } catch (err) {
+      toastr.error("Create Offer Failed")
+    }
   }
 
   const tokenAddress = (token_name: any) => {
