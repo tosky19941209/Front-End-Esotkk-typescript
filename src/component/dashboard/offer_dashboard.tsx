@@ -87,8 +87,8 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
           amount: eachOfferContent[5]
         })
       }
-      console.log("SHow Offer =>", arrayOffer)
       setOfferIDContent(arrayOffer)
+      console.log("SHow Offer =>", arrayOffer)
     } catch (err) {
       console.log(err)
     }
@@ -179,7 +179,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                       <tr
                         className="cursor-pointer"
                         onClick={() => {
-                          navigate('/showoffer');
+                          navigate('/showoffer', { state: {index} });
                         }}
                       >
                         <td>{index}</td>
@@ -261,7 +261,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
           setCreateOffer={setCreateOffer}
         />
       </div>
-    </div>
+    </div >
   );
 };
 
