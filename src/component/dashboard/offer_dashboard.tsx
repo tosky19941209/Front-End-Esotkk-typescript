@@ -191,7 +191,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                         <td>{String(item.price)}</td>
                         <td>{String(Number(item.price) * 0.99)}</td>
                         <td>16.85%</td>
-                        <td>12.8893</td>
+                        <td>{String(Number(item.amount) / Math.pow(10, 18))}</td>
                       </tr>
                     ))
 
