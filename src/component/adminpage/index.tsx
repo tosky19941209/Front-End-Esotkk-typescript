@@ -19,7 +19,7 @@ function Admin() {
         try {
             // const signer = await provider.getSigner()
             // const _estokkYamContract = new Contract(estokkYamContractAddress, EstokkYamContractAbi, signer)
-            const resultofSetAdmin: any = await estokkYamContract.methods.initialize(account, "0x20B3414EccA6e848F5a4da6c5657100974b2040C").send({from: account})
+            const resultofSetAdmin: any = await estokkYamContract.methods.initialize(account, "0x20B3414EccA6e848F5a4da6c5657100974b2040C").send({ from: account })
             // const resultofSetAdmin: any = await _estokkYamContract.initialize("0x8E71fbF0f1a49ed1a3c774Bf7477dc39f66D268f", "0x20B3414EccA6e848F5a4da6c5657100974b2040C")
             console.log("Result of SetAmdin => ", resultofSetAdmin)
         } catch (err) {
@@ -38,7 +38,7 @@ function Admin() {
             1, 1, 1, 1
         ]
 
-        const result: any = await estokkYamContract.methods.toggleWhitelistWithType(token_address, token_type).send({from: account})
+        const result: any = await estokkYamContract.methods.toggleWhitelistWithType(token_address, token_type).send({ from: account })
         console.log("Result Toggle ===>", result)
 
 
@@ -58,7 +58,7 @@ function Admin() {
         const buyer: string = "0x0000000000000000000000000000000000000000"
         const price: Number = 5
         const amount: Number = 100
-        const result: any = await estokkYamContract.methods.createOffer(offer_token, buyer_token, buyer, price, amount).send({from: account});
+        const result: any = await estokkYamContract.methods.createOffer(offer_token, buyer_token, buyer, price, amount).send({ from: account });
         console.log("result => ", result)
     }
 
@@ -66,6 +66,16 @@ function Admin() {
         console.log("ShowOffer => ", await estokkYamContract.methods.showOffer(0).call())
         console.log("Get OfferCount => ", await estokkYamContract.methods.getOfferCount().call())
         // console.log("GetTokenType => ", await estokkYamContract.methods.getTokenType(real_token).call())
+    }
+
+    const Buy = async () => {
+        const offer_token: any = real_token
+        const buyer_token: any = usdc_token
+        const buyer: string = "0x0000000000000000000000000000000000000000"
+        const price: any = 5
+        let decimal: any = 18
+        let amount: any = 100
+        await estokkYamContract.methods.buy(0, price, amount * Math.pow(10, decimal)).send({from: account})
     }
 
     useEffect(() => {
@@ -105,6 +115,15 @@ function Admin() {
             >
                 Show Offer
             </button>
+
+            <button
+                className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
+                onClick={Buy}
+            >
+                Buy
+            </button>
+
+
 
         </div>
     )

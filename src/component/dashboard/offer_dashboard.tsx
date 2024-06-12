@@ -3,7 +3,8 @@ import MarketBtn from '../atmComponent/marketbtn';
 import AddOfferModal from './addoffermodal';
 import CreateOfferModal from './createoffermodal';
 import { useNavigate } from 'react-router-dom';
-
+import useWeb3 from '../../hooks/useWeb3';
+import { convertToObject } from 'typescript';
 
 
 interface OfferDashboardProps {
@@ -25,10 +26,18 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
   const [isBtnPush3, setIsBtnPush3] = useState(false);
   const currentRef = useRef<HTMLButtonElement | null>(null);
 
+  const { estokkYamContract, account } = useWeb3()
+
+  const TotalOfferCount = async () => {
+    console.log("Get OfferCount => ", await estokkYamContract.methods.getOfferCount().call())
+  }
+
+
   useEffect(() => {
     if (createoffer === 'sell' || createoffer === 'buy' || createoffer === 'exchange') {
       setCreateOfferTitle(createoffer);
       setIsCreateOfferModalOpen(true);
+
     } else {
       setCreateOffer('none');
     }
@@ -41,6 +50,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
       currentRef.current.click();
     }
   }, []);
+
 
   return (
     <div className="flex flex-col w-[100%] justify-between">
@@ -113,6 +123,9 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     <td>16.85%</td>
                     <td>12.8893</td>
                   </tr>
+                  {
+
+                  }
                 </tbody>
               </table>
             </>

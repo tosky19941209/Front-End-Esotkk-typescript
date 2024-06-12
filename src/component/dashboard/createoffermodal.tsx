@@ -10,23 +10,47 @@ interface CreateOfferModalProps {
 }
 
 const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
-  const {chainId, estokkYamContract} = useWeb3();
+  const { chainId, estokkYamContract, account } = useWeb3();
 
-  const [networkName, setNetwork] = useState<string>("")
+  const [offerToken, setOfferToken] = useState<any>()
+  const [buyerToken, setBuyerToken] = useState<any>()
+  const [offerPriceUsdc, setOfferPriceUsdc] = useState<any>()
+  const [offerQuantity, setOfferQuantity] = useState<any>()
+  const [offerPriceCurrency, setOfferPriceCurrency] = useState<any>()
+
+  const buyer: string = "0x0000000000000000000000000000000000000000"
+
+  const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
+  const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
+  const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
+  const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
 
   const close = () => {
     props.setCreateOffer('none');
     props.setIsCreateOfferModalOpen(false);
   };
 
-  const CreateOffer = () => {
-
+  const CreateOffer = async () => {
+    const result: any = await estokkYamContract.methods.createOffer(offerToken, buyerToken, buyer, offerPriceUsdc, offerQuantity).send({ from: account })
+    console.log("Result Offer => ", result)
+    close()
   }
 
-  useEffect(()=>{
-    console.log('chainId=>>>>',chainId)
-  },[chainId])
-    
+  const tokenAddress = (token_name: any) => {
+    if (token_name === 'tk') return TK_token
+    if (token_name === 'realtoken') return real_token
+    if (token_name === 'usdc') return usdc_token
+    if (token_name === 'wdai') return wdai_token
+  }
+
+  // useEffect(() => {
+  //   console.log("Offer => ", offerToken)
+  //   console.log("Buyer => ", buyerToken)
+  //   console.log("Price => ", offerPriceCurrency)
+  //   console.log("Quantity => ", offerQuantity)
+
+  // }, [offerToken, buyerToken, offerPriceCurrency, offerQuantity])
+
   return (
     <Modal
       ariaHideApp={false}
@@ -56,32 +80,52 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         </div>
         <div className="flex flex-col w-[100%] mt-4">
           <p>Offer Token</p>
-          <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none">
-            <option value="19530_hickory">19530 Hickory</option>
-            <option value="realtoken_4380">RealToken 4380</option>
+          <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+            onChange={(e) => {
+              const value = e.target.value
+              if (value == "null") return
+              setOfferToken(tokenAddress(value))
+            }}
+          >
+            <option value="null">Select</option>
+            <option value="tk">19530 Hickory</option>
+            <option value="realtoken">RealToken</option>
           </select>
         </div>
 
         <div className="flex flex-col w-[100%] mt-3">
           <p>Buyer Token</p>
-          <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none">
-            <option>USDC</option>
-            <option>xWDAI</option>
-            <option>armmwXDAI</option>
-            <option>MAI</option>
-            <option>wETH</option>
+          <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+            onChange={(e) => {
+              const value = e.target.value
+              if (value == "null") return
+
+              setBuyerToken(tokenAddress(value))
+            }}
+          >
+            <option value="null">Select</option>
+            <option value="usdc">USDC</option>
+            <option value="wdai">WDAI</option>
           </select>
         </div>
 
         <div className="flex flex-row w-[100%] mt-3 justify-between">
           <div>
             <p>Buyer price in $</p>
-            <input type="text" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none" />
+            <input type="number" value={offerPriceCurrency} disabled={true} className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+              onChange={(e) => {
+              }}
+            />
           </div>
           <img src="./exchange.svg" className="w-10 mt-[40px]" alt="exchange" />
           <div>
             <p>Buyer price in USDC</p>
-            <input type="text" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none" />
+            <input value={offerPriceUsdc} type="text" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+              onChange={(e) => {
+                setOfferPriceUsdc(e.target.value)
+                setOfferPriceCurrency(Number(e.target.value) * 0.99)
+              }}
+            />
           </div>
         </div>
         <p className="w-[50%] text-[red] text-[10px]">
@@ -105,7 +149,11 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
           </div>
         </div>
         <p className="text-[15px] text-[black] mt-3">Quantity</p>
-        <input type="text" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none" />
+        <input type="number" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+          onChange={(e) => {
+            setOfferQuantity(Number(e.target.value) * Math.pow(10, 18))
+          }}
+        />
         <div className="flex items-center mt-3">
           <input type="checkbox" className="mr-2 w-5 h-5" />
           <label className="text-[black] mt-2">I want to create a private offer</label>
