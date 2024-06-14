@@ -2,11 +2,18 @@ import { useEffect, useState } from "react"
 import useWeb3 from "../../hooks/useWeb3"
 function Admin() {
     const { estokkYamContract, account, chainId } = useWeb3()
-    // const provider = new ethers.BrowserProvider(window.ethereum)
-    const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
-    const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
-    const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
-    const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
+    // const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
+    // const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
+    // const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
+    // const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
+
+
+    const real_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
+    const TK_token: any = "0xe3Bff3b3c46D1866E584F84e4eD17eE0CDef172C"
+    const usdc_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
+    const wdai_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
+
+
 
     const setAdmin = async () => {
         try {
@@ -72,7 +79,7 @@ function Admin() {
         console.log("My Accout =>", account)
         console.log("My ChainID =>", chainId)
         console.log("conract => > > > ", estokkYamContract);
-        
+
     }, [account, chainId, estokkYamContract])
 
     return (
