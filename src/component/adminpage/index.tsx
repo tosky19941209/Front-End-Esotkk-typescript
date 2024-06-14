@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import useWeb3 from "../../hooks/useWeb3"
 function Admin() {
-    const { estokkYamContract, account } = useWeb3()
+    const { estokkYamContract, account, chainId } = useWeb3()
     // const provider = new ethers.BrowserProvider(window.ethereum)
     const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
     const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
@@ -10,10 +10,7 @@ function Admin() {
 
     const setAdmin = async () => {
         try {
-            // const signer = await provider.getSigner()
-            // const _estokkYamContract = new Contract(estokkYamContractAddress, EstokkYamContractAbi, signer)
             const resultofSetAdmin: any = await estokkYamContract.methods.initialize(account, "0x20B3414EccA6e848F5a4da6c5657100974b2040C").send({ from: account })
-            // const resultofSetAdmin: any = await _estokkYamContract.initialize("0x8E71fbF0f1a49ed1a3c774Bf7477dc39f66D268f", "0x20B3414EccA6e848F5a4da6c5657100974b2040C")
             console.log("Result of SetAmdin => ", resultofSetAdmin)
         } catch (err) {
             console.log(err)
@@ -73,7 +70,10 @@ function Admin() {
 
     useEffect(() => {
         console.log("My Accout =>", account)
-    }, [account])
+        console.log("My ChainID =>", chainId)
+        console.log("conract => > > > ", estokkYamContract);
+        
+    }, [account, chainId, estokkYamContract])
 
     return (
         <div className="w-[80%] h-[700px] flex justify-between mt-5">

@@ -5,49 +5,14 @@ import CreateOfferModal from './createoffermodal';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
 import { Alchemy, Network } from "alchemy-sdk";
+import ShowOffer from '../showoffer/showoffer';
 
 interface OfferDashboardProps {
   offerType: number;
 }
-// const getTokenInfo = async (address: string) => {
-//   const config = {
-//     apiKey: "5ps2IIW-bbgZErbo9OKq7LBZR8G0t0i2",
-//     network: Network.ETH_SEPOLIA,
-//   };
-
-//   const alchemy = new Alchemy(config);
-
-//   const metadata = await alchemy.core.getTokenMetadata(
-//     address
-//   );
-//   return metadata
-// }
-// const getTokenInfo = async (address: string) => {
-//   const result = await estokkYamContract.methods.tokenInfo(address).call()
-//   console.log("Result => ", result)
-// }
-
-// const getOfferContent = async (offerContent: any) => {
-//   console.log("Offer Content => ", offerContent)
-//   const offerTokenInfo = await getTokenInfo(offerContent[0])
-//   const buyerTokenInfo = await getTokenInfo(offerContent[1])
-// const offerTokenName = offerTokenInfo.name
-// const buyerTokenName = buyerTokenInfo.name
-// const buyerAddress = offerContent[2]
-// const price = offerContent[4]
-// const amount = 100
-
-// return {
-//   offerToken: offerTokenName,
-//   buyerToken: buyerTokenName,
-//   buyer: buyerAddress,
-//   price: price,
-//   amount: amount
-// }
-// }
 
 const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
-  const { estokkYamContract, account } = useWeb3()
+  const { estokkYamContract, account, chainId } = useWeb3()
   const [isHover, setIsHover] = useState(false);
   const buttonClass =
     'w-[100%] h-10 flex items-center border-[1px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] rounded mt-2 mb-2 lg:mr-1 lg:ml-1 focus:outline-none duration-150';
@@ -62,7 +27,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
   const [isBtnPush3, setIsBtnPush3] = useState(false);
   const currentRef = useRef<HTMLButtonElement | null>(null);
 
-
+  const btnRefresh = useRef<HTMLButtonElement | null>(null)
   const [offerIDContent, setOfferIDContent] = useState<any>([])
 
   const array = [0, 1, 3, 5, 6, 3, 6, 6]
@@ -104,6 +69,15 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
     }
   }, [createoffer]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (btnRefresh.current) {
+        btnRefresh.current.click();
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [chainId])
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,14 +85,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
       currentRef.current.click();
     }
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const first = offerIDContent
-      console.log("Content: ", first)
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [offerIDContent]); // Empty dependency array to run the effect only once on mount
 
   return (
     <div className="flex flex-col w-[100%] justify-between">
@@ -179,7 +145,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                       <tr
                         className="cursor-pointer"
                         onClick={() => {
-                          navigate('/showoffer', { state: {index} });
+                          navigate('/showoffer', { state: { index } });
                         }}
                       >
                         <td>{index}</td>
@@ -237,7 +203,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                 }}
               >
                 <img
-                  src={isHover ? `./addoffers_hover.svg` : `./addoffers.svg`}
+                  src={isHover ? `./img/addoffers_hover.svg` : `./img/addoffers.svg`}
                   className="w-5 ml-2 mr-2"
                   alt="Add Offer"
                 />
@@ -261,6 +227,13 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
           setCreateOffer={setCreateOffer}
         />
       </div>
+      <button
+        ref={btnRefresh}
+        onClick={() => {
+          console.log("Refresh is clicked")
+          ShowTotalOffer()
+        }}>
+      </button>
     </div >
   );
 };

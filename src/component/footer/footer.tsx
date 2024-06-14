@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <div
       className="w-[100%] flex justify-between object-cover"
       style={{
-        background: "url('./footer.png')",
+        background: "url('./img/footer.png')",
       }}
     >
       <div className="pl-[9%]">

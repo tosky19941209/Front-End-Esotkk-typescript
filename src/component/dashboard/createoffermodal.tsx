@@ -79,7 +79,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
           </p>
           <p className="text-[25px] text-[#00b3ba]">Create your Offer</p>
           <div className="flex items-center justify-center rounded-md bg-[#173039] w-32 h-8 text-[20px] text-[white]">
-            <img src="mark.png" className="w-8" alt="mark" />
+            <img src="img/mark.png" className="w-8" alt="mark" />
             <p>5%</p>
           </div>
         </div>
@@ -122,7 +122,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
               }}
             />
           </div>
-          <img src="./exchange.svg" className="w-10 mt-[40px]" alt="exchange" />
+          <img src="./img/exchange.svg" className="w-10 mt-[40px]" alt="exchange" />
           <div>
             <p>Buyer price in USDC</p>
             <input value={offerPriceUsdc} type="text" className="h-9 w-[100%] border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
@@ -147,7 +147,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         <div className="bg-[#00b3ba] w-[100%] h-[2px] "></div>
         <p className="text-[15px] text-[#00b3ba] mt-3">Wallet balance</p>
         <div className="flex items-center justify-start mt-1">
-          <img src="./billing.png" alt="billing" className="w-12" />
+          <img src="./img/billing.png" alt="billing" className="w-12" />
           <div className="ml-2">
             <p className="font-bold text-[13px]">19530 Hickory</p>
             <p className="text-[13px]">With USDC = 1.00000054$</p>

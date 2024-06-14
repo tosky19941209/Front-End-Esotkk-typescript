@@ -10,7 +10,7 @@ function ProjectRouter() {
         <Router>
             <div className='flex flex-col items-center justify-between'
                 style={{
-                    "background": "url('./background.png')",
+                    "background": "url('./img/background.png')",
                     "backgroundRepeat": "no-repeat",
                     "backgroundSize": "cover"
                 }}

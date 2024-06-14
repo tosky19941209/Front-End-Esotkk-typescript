@@ -9,7 +9,7 @@ const Filter: React.FC = () => {
         className="pl-5 rounded text-[white] w-[100%] h-[50px] mt-2 bg-[white] bg-opacity-40 placeholder:text-[white] focus:bg-[white] focus:bg-opacity-40 focus:border-none focus:outline-none text-[30px]"
         placeholder="Search for articles"
         style={{
-          backgroundImage: 'url(./search.png)',
+          backgroundImage: 'url(./img/search.png)',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '30px',
           backgroundPositionY: '50%',
