@@ -27,7 +27,7 @@ const OfferBtn = forwardRef<HTMLButtonElement, OfferBtnProps>(function OfferBtn(
     >
       {btnName}
       <img
-        src={isHover || isBtnPush ? `./${imgSrc(btnName)}_hover.svg` : `./${imgSrc(btnName)}.svg`}
+        src={isHover || isBtnPush ? `./img/${imgSrc(btnName)}_hover.svg` : `./img/${imgSrc(btnName)}.svg`}
         className="w-8 ml-4"
         alt={`${btnName} icon`}
       />

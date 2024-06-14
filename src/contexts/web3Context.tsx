@@ -12,7 +12,8 @@ import { useAccount, useChainId } from 'wagmi';
 import { useEthersProvider, useEthersSigner } from '../utils/wagmi-ethers';
 import { Web3ContextType } from '../types';
 import EstokkYamContractAbi from '../contract/EstokkYam.json';
-import { estokkYamContractAddress } from '../constant';
+import { estokkYamContractAddress_Sepolia } from '../constant';
+import { estokkYamContractAddress_Chiado } from '../constant';
 import { Container } from 'postcss';
 
 declare let window: any;
@@ -27,7 +28,9 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     const web3 = new Web3(window.ethereum);
 
     const [provider, setProvider] = useState<ContractRunner>(defaultProvider);
+    const [estokkYamContractAddress, setEstokkYamContractAddress] = useState<any>()
     const [estokkYamContract, setEstokkYamContract] = useState<Contract>({} as Contract);
+
     const init = useCallback(async () => {
         try {
             if (!isConnected || !ethersProvider) {
@@ -37,11 +40,21 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
                 console.log('Connected wallet');
             }
 
-            const _estokkYamContract: any = new web3.eth.Contract(
-                EstokkYamContractAbi,
-                estokkYamContractAddress
-            );
+            let _estokkYamContract:any;
+            if(chainId === 10200){
+                _estokkYamContract = new web3.eth.Contract(
+                    EstokkYamContractAbi,
+                    estokkYamContractAddress_Chiado
+                );
+            } else if(chainId === 11155111){
+                _estokkYamContract = new web3.eth.Contract(
+                    EstokkYamContractAbi,
+                    estokkYamContractAddress_Sepolia
+                );
+            }
+
             setEstokkYamContract(_estokkYamContract);
+
         } catch (err) {
             console.log(err);
         }
@@ -58,7 +71,8 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             chainId,
             isConnected,
             library: provider ?? signer,
-            estokkYamContract
+            estokkYamContract,
+            estokkYamContractAddress
         }),
         [
             address,
@@ -66,7 +80,8 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             isConnected,
             provider,
             signer,
-            estokkYamContract
+            estokkYamContract,
+            estokkYamContractAddress
         ]
     );
 

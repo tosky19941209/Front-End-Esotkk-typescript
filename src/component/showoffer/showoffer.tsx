@@ -65,7 +65,7 @@ const ShowOffer: React.FC = () => {
             <p className="flex w-[80vw] bg-[#00dbe3] text-[white] text-[30px] items-center justify-center mt-20">
                 SELL
             </p>
-            <img src='./offerbackground.png' alt="offerbackground" className="w-[80vw]" />
+            <img src='./img/offerbackground.png' alt="offerbackground" className="w-[80vw]" />
             <p className="flex w-[80vw] bg-[#173039] text-[white] text-[30px] items-center justify-center">
                 20550 Townsen Blvd Bldg 2 unit 101
                 <p className="text-[30px] text-[#00dbe3] ml-3">Humble Tx 77338</p>
@@ -97,7 +97,7 @@ const ShowOffer: React.FC = () => {
                     onClick={Buy}
                 >
                     <p className="text-[25px] text-[white] font-bold">Cart</p>
-                    <img src="./cart.svg" alt="cart.svg" className="w-10" />
+                    <img src="./img/cart.svg" alt="cart.svg" className="w-10" />
                 </button>
             </div>
         </div>

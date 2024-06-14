@@ -7,4 +7,5 @@ export type Web3ContextType = {
     isConnected?: boolean;
     library?: ContractRunner;
     estokkYamContract: any;
+    estokkYamContractAddress: any;
   };
