@@ -31,11 +31,6 @@ const ShowOffer: React.FC = () => {
     }
 
     const Buy = async () => {
-        console.log('My account address', account)
-        console.log("OfferId", offerId)
-        console.log("Price:", price)
-        console.log("amount: ", amount)
-        // await estokkYamContract.methods.buy(offerId, price, amount).send({ from: amount })
         try {
             await estokkYamContract.methods.buy(0, price, amount).send({ from: account })
             toastr.success("Successful")
@@ -46,7 +41,6 @@ const ShowOffer: React.FC = () => {
     }
 
     useEffect(() => {
-        console.log("offerId: ", offerId)
         if (offerId)
             Initialize()
     }, [offerId])
@@ -56,10 +50,9 @@ const ShowOffer: React.FC = () => {
 
     }, [])
 
-    useEffect(() => {
-        console.log("Price: ", price)
-        console.log("Amount: ", amount)
-    }, [price, amount])
+    // useEffect(() => {
+    //     console.log("Amount: ", amount)
+    // }, [price, amount])
     return (
         <div className="flex flex-col items-center justify-center w-[100%] bg-[white]">
             <p className="flex w-[80vw] bg-[#00dbe3] text-[white] text-[30px] items-center justify-center mt-20">

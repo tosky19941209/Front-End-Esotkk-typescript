@@ -4,9 +4,8 @@ import AddOfferModal from './addoffermodal';
 import CreateOfferModal from './createoffermodal';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
-import { Alchemy, Network } from "alchemy-sdk";
 import ShowOffer from '../showoffer/showoffer';
-
+import BasicTable from './BasicTable';
 interface OfferDashboardProps {
     offerType: number;
 }
@@ -15,7 +14,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
     const { estokkYamContract, account, chainId } = useWeb3()
     const [isHover, setIsHover] = useState(false);
     const buttonClass =
-        'w-[100%] h-10 flex items-center border-[1px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] rounded mt-2 mb-2 lg:mr-1 lg:ml-1 focus:outline-none duration-150';
+        'w-[100%] h-10 flex items-center border-[1px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] rounded focus:outline-none duration-150';
 
     const [isAddOfferModalOpen, setIsAddOfferModalOpen] = useState(false);
     const [isCreateOfferModalOpen, setIsCreateOfferModalOpen] = useState(false);
@@ -37,7 +36,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
         try {
             const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
 
-            console.log("OfferCount : ", totalOfferCount)
             for (let i = 0; i < totalOfferCount; i++) {
                 const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
                 // arrayOffer.push(await getOfferContent(eachOfferContent))
@@ -53,7 +51,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                 })
             }
             setOfferIDContent(arrayOffer)
-            console.log("SHow Offer =>", arrayOffer)
         } catch (err) {
             console.log(err)
         }
@@ -88,7 +85,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
 
     return (
         <div className="flex flex-col w-[100%] justify-between">
-            <div className="flex w-[100%] lg:w-[60%] justify-between md:flex-row flex-col">
+            <div className="flex">
                 <MarketBtn
                     btnName="Sell"
                     ref={currentRef}
@@ -119,12 +116,23 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                 />
             </div>
 
-            <div className="mt-4 rounded-md h-[60vh]">
-                <div className="white pl-2 pr-2 w-[100%] h-[90%] bg-[white]">
-                    {props.offerType === 1 && (
+            <div className="mt-4 mb-4 rounded-md bg-white">
+                {
+                    props.offerType === 1 && (
                         <>
                             <p className="text-center text-xl text-[#00b3ba]">Dex</p>
-                            <table className="w-[100%] table">
+                            <BasicTable content={offerIDContent} />
+                        </>
+                    )
+                }
+
+                {/* {props.offerType === 1 && (
+                        <div className='w-[80vw] bg-red-100 scroll-smooth '>
+                            <caption className="caption-top text-center text-xl text-[#00b3ba]">
+                                Dex
+                            </caption>
+                            <p className="text-center text-xl text-[#00b3ba]">Dex</p>
+                            <table className="table">
                                 <thead>
                                     <tr>
                                         <th className="text-sm">Offer ID</th>
@@ -164,36 +172,42 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                                     }
                                 </tbody>
                             </table>
-                        </>
-                    )}
-                    {props.offerType === 2 && (
-                        <>
-                            <p className="text-center text-xl text-[#00b3ba]">Dex</p>
-                            <table className="w-[100%] table">
-                                <thead>
-                                    <tr>
-                                        <th className="text-sm">Offer ID</th>
-                                        <th className="text-sm">Offer Token</th>
-                                        <th className="text-sm">Buyer Token</th>
-                                        <th className="text-sm">Rate of Return</th>
-                                        <th className="text-sm">Official Yield</th>
-                                        <th className="text-sm">Yield Delta</th>
-                                        <th className="text-sm">Official Price</th>
-                                        <th className="text-sm">Price / Token</th>
-                                        <th className="text-sm">Price delta</th>
-                                        <th className="text-sm">Available quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        </div>
+                    )} */}
+
+                {props.offerType === 2 && (
+                    <>
+                        <p className="text-center text-xl text-[#00b3ba]">Dex</p>
+                        <BasicTable content={offerIDContent} />
+                    </>
+                    // <>
+                    //     <p className="text-center text-xl text-[#00b3ba]">Dex</p>
+                    //     <table className="w-[100%] table">
+                    //         <thead>
+                    //             <tr>
+                    //                 <th className="text-sm">Offer ID</th>
+                    //                 <th className="text-sm">Offer Token</th>
+                    //                 <th className="text-sm">Buyer Token</th>
+                    //                 <th className="text-sm">Rate of Return</th>
+                    //                 <th className="text-sm">Official Yield</th>
+                    //                 <th className="text-sm">Yield Delta</th>
+                    //                 <th className="text-sm">Official Price</th>
+                    //                 <th className="text-sm">Price / Token</th>
+                    //                 <th className="text-sm">Price delta</th>
+                    //                 <th className="text-sm">Available quantity</th>
+                    //             </tr>
+                    //         </thead>
+                    //         <tbody>
 
 
-                                </tbody>
-                            </table>
-                        </>
-                    )}
-                    {props.offerType === 3 && (
-                        <div>
-                            <p className="text-center text-xl text-[#00b3ba] font-bold pt-2">Create Offer</p>
+                    //         </tbody>
+                    //     </table>
+                    // </>
+                )}
+                {props.offerType === 3 && (
+                    <div className='h-[45vh] mb-5'>
+                        <p className="text-center text-xl text-[#00b3ba] font-bold pt-2">Create Offer</p>
+                        <div className='w-[100%] mt-5 pr-2 pl-2'>
                             <button
                                 className={buttonClass}
                                 onMouseOver={() => setIsHover(true)}
@@ -210,9 +224,9 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                                 Add Offer
                             </button>
                         </div>
+                    </div>
 
-                    )}
-                </div>
+                )}
 
                 <AddOfferModal
                     isAddOfferModalOpen={isAddOfferModalOpen}
@@ -230,7 +244,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
             <button
                 ref={btnRefresh}
                 onClick={() => {
-                    console.log("Refresh is clicked")
                     ShowTotalOffer()
                 }}>
             </button>

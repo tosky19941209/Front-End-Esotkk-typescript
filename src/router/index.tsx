@@ -4,7 +4,6 @@ import Footer from "../component/footer/footer"
 import ShowOffer from '../component/showoffer/showoffer';
 import Admin from "../component/adminpage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-
 function ProjectRouter() {
     return (
         <Router>
@@ -26,5 +25,4 @@ function ProjectRouter() {
         </Router>
     )
 }
-
 export default ProjectRouter

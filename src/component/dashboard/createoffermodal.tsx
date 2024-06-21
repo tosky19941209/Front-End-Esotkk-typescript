@@ -33,7 +33,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
   const CreateOffer = async () => {
     try {
       const result: any = await estokkYamContract.methods.createOffer(offerToken, buyerToken, buyer, offerPriceUsdc, offerQuantity).send({ from: account })
-      console.log("Result Offer => ", result)
       toastr.success("Offer is created Successfully!")
       close()
     } catch (err) {
