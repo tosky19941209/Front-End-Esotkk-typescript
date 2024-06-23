@@ -8,9 +8,11 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useNavigate } from 'react-router-dom';
+import useWeb3 from '../../hooks/useWeb3';
+import { getOfficialYield, getOfficialPrice } from '../functions/tokensContract';
 
 interface Column {
-  id: 'offerid' | 'offertoken' | 'buyertoken' | 'officialyield' | 'yielddelta' | 'officialprice' | 'pricetoken' | 'pricedelta' | 'availablequantity';
+  id: 'offerid' | 'offertoken' | 'buyertoken' | 'officialyield' | 'offeryield' | 'yielddelta' | 'officialprice' | 'pricetoken' | 'pricedelta' | 'availablequantity';
   label: string;
   minWidth?: number
   align?: 'center';
@@ -20,15 +22,18 @@ interface Column {
 const columns: readonly Column[] = [
   {
     id: 'offerid', label: 'OfferId', minWidth: 70,
+    align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'offertoken', label: 'Offer\u00a0Token', minWidth: 80,
+    align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
 
   {
     id: 'buyertoken', label: 'Buyer\u00a0Token', minWidth: 80,
+    align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
@@ -36,35 +41,44 @@ const columns: readonly Column[] = [
     label: 'Official Yield',
     minWidth: 50,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
+    format: (value: number) => value.toLocaleString('en-US') + " %",
   },
+
+  {
+    id: 'offeryield',
+    label: 'Offer Yield',
+    minWidth: 50,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US') + " %",
+  },
+
   {
     id: 'yielddelta',
     label: 'Yield Delta',
     minWidth: 50,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
+    format: (value: number) => value.toLocaleString('en-US') + " %",
   },
   {
     id: 'officialprice',
     label: 'Official Price',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => value.toFixed(2),
+    format: (value: number) => value.toFixed(2) + " $USD",
   },
   {
     id: 'pricetoken',
-    label: 'Price / TOken',
+    label: 'Price / Token',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => value.toFixed(2),
+    format: (value: number) => value.toFixed(2) + " $USD",
   },
   {
     id: 'pricedelta',
     label: 'Price delta',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => value.toFixed(2),
+    format: (value: number) => value.toFixed(2) + " %",
   },
   {
     id: 'availablequantity',
@@ -80,6 +94,7 @@ interface Data {
   offertoken: string;
   buyertoken: string;
   officialyield: number;
+  offeryield: number;
   yielddelta: number;
   officialprice: number;
   pricetoken: number;
@@ -92,6 +107,7 @@ function createData(
   offertoken: string,
   buyertoken: string,
   officialyield: number,
+  offeryield: number,
   yielddelta: number,
   officialprice: number,
   pricetoken: number,
@@ -99,15 +115,15 @@ function createData(
   availablequantity: number,
 ): Data {
   // const density = population / size;
-  return { offerid, offertoken, buyertoken, officialyield, yielddelta, officialprice, pricetoken, pricedelta, availablequantity };
+  return { offerid, offertoken, buyertoken, officialyield, offeryield, yielddelta, officialprice, pricetoken, pricedelta, availablequantity };
 }
 
 
 
-export default function StickyHeadTable(props: any) {
+export default function GlobalOffer(props: any) {
+  const { tokens, properties } = useWeb3()
   const [rows, setRows] = React.useState([
-    createData(0, 'Offer', 'Buyer', 10.4, 10, 1, 13, 4, 9),
-    createData(1, 'Offer1', 'Buyer1', 15.4, 13, 11, 12, 9, 11),
+    createData(1, 'Offer1', 'Buyer1', 15.4, 13, 10, 11, 12, 9, 11),
   ])
   const navigate = useNavigate()
   const [page, setPage] = React.useState(0);
@@ -129,23 +145,28 @@ export default function StickyHeadTable(props: any) {
   React.useEffect(() => {
     const offerArray: any = []
     const offers = props.content
+
     offers.map((item: any, index: any) => {
-      const _priceToken = 50
-      const _officialYield = 10
-      const _yeidlDelta = 3.5
-      const _officialprice = item.price
-      const _priceDelta = 7.6
-      const _availableQuantity = Number(item.amount) / Math.pow(10, 18)
-      offerArray.push(createData(index, item.offerToken, item.buyerToken, _officialYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
+      const _offerTokenAddres: any = item.offerTokenAddress
+      const _buyerTokenAddres: any = item.buyerTokenAddress
+      const _offerId: any = item.offerId
+      const _officialYield: any = getOfficialYield(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
+      const _officialprice: any = getOfficialPrice(_offerTokenAddres, _buyerTokenAddres, tokens, properties)
+      const _priceToken: any = Number(item.price)
+      const _offerYield: any = _officialYield * _officialprice / _priceToken
+      const _yeidlDelta: any = (_offerYield - _officialYield) * 100 / _officialYield
+      const _priceDelta: any = (_priceToken - _officialprice) / _officialprice
+      const _availableQuantity: any = Number(item.amount) / Math.pow(10, 18)
+      offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
     })
 
     setRows(offerArray)
 
-  }, [props])
+  }, [props, tokens, properties])
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: 440, minHeight: 300 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -170,7 +191,7 @@ export default function StickyHeadTable(props: any) {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align} onClick={() => {
-                          gotoShowOffer(index)
+                          gotoShowOffer(row.offerid)
                         }}>
                           {column.format && typeof value === 'number'
                             ? column.format(value)

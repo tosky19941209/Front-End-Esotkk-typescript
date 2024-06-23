@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+interface FilterProps {
+  setSearchKeyWord: (keyword: string) => void;
+}
+const Filter: React.FC<FilterProps> = (props) => {
 
-const Filter: React.FC = () => {
+
   return (
-    <div className="justify-begin w-[80vw] mt-10" id="Search">
+    <div className="justify-begin w-[80vw] mt-2" id="Search">
       <p className="text-[50px] text-[white] font-bold">Filters</p>
       <input
         type="text"
@@ -14,6 +18,9 @@ const Filter: React.FC = () => {
           backgroundSize: '30px',
           backgroundPositionY: '50%',
           backgroundPositionX: '10px',
+        }}
+        onChange={(e) => {
+          props.setSearchKeyWord(e.target.value)
         }}
       />
       <div className="flex items-center mt-3">

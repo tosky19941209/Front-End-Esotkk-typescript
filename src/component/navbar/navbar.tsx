@@ -1,12 +1,21 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import Logo from "./logo"
 import WalletConnectBtn from "../walletconnect"
+import { Link, NavLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 const NavBar: React.FC = () => {
+    const [navbarIndex, setNavbarIndex] = useState<Number>()
+
+    const location = useLocation();
+    useEffect(() => {
+        if (location.pathname === "/") setNavbarIndex(1)
+        if (location.pathname === "/myoffer") setNavbarIndex(2)
+        if (location.pathname === "/history") setNavbarIndex(3)
+    }, [location]);
+
     return (
-        <div className="w-[80%] flex flex-col items-center lg:flex-row lg:justify-between ">
+        <header className="w-[80%] flex flex-col items-center lg:flex-row lg:justify-between ">
             <div className="absolute right-10 top-3 block lg:hidden" id="ConnectWallet">
-                {/* <button className="w-[40vw] h-[6vh] rounded bg-[#00f6ff] text-lg text-[white]">Connect Wallet</button>
-                 */}
                 <WalletConnectBtn />
             </div>
 
@@ -18,27 +27,44 @@ const NavBar: React.FC = () => {
                 <nav className="flex mt-10">
                     <ul className="flex w-[80vw] lg:w-[30vw]  items-center justify-between">
 
-                        <li className="">
-                            <p className="text-[white] hover:text-[#00b3ba] text-[20px]">EXPLORE</p>
+                        <li>
+                            <a href="/"
+                                className={`${navbarIndex == 1 ? "text-[#00b3ba]" : "text-[white]"} hover:text-[#00b3ba] text-[20px] hover:no-underline`}
+                                onClick={() => {
+                                    setNavbarIndex(1)
+                                }}>
+                                EXPLORE
+                            </a>
                         </li>
 
-                        <li className="">
-                            <p className="text-[white] hover:text-[#00b3ba] text-[20px]">YOUR OFFERS</p>
+                        <li>
+                            <a href="/myoffer"
+                                className={`${navbarIndex == 2 ? "text-[#00b3ba]" : "text-[white]"} hover:text-[#00b3ba] text-[20px] hover:no-underline`}
+                                onClick={() => {
+                                    setNavbarIndex(1)
+                                }}>
+                                MY OFFERS
+                            </a>
                         </li>
 
-                        <li className="" >
-                            <p className="text-[white] hover:text-[#00b3ba] text-[20px]">HISTORY</p>
+                        <li>
+                            <a href="/history"
+                                className={`${navbarIndex == 3 ? "text-[#00b3ba]" : "text-[white]"} hover:text-[#00b3ba] text-[20px] hover:no-underline`}
+                                onClick={() => {
+                                    setNavbarIndex(1)
+                                }}>
+                                HISTORY
+                            </a>
                         </li>
-
                     </ul>
                 </nav>
             </div>
 
             <div className="mt-8 hidden lg:block" id="ConnectWallet">
-                {/* <button className="w-[18vw] h-[6vh] rounded bg-[#00f6ff] text-[2xl] text-[white]">Connect Wallet</button> */}
                 <WalletConnectBtn />
             </div>
-        </div>
+        </header>
+
     )
 }
 

@@ -20,7 +20,7 @@ const OfferButtonGroup: React.FC<OfferButtonGroupProps> = (props) => {
   }, []);
 
   return (
-      <div className="flex w-[100%] flex-col sm:flex-row">
+      <div className="flex w-[100%] flex-col sm:flex-row mt-4">
         <OfferBtn
           btnName="My Offers"
           ref={currentRef}

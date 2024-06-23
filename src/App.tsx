@@ -21,7 +21,6 @@ function App() {
   });
 
   return (
-    // <ProjectRouter/>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
@@ -35,7 +34,7 @@ function App() {
           })}
         >
           <Web3Provider>
-            <ProjectRouter />
+              <ProjectRouter />
           </Web3Provider>
         </RainbowKitProvider>
       </QueryClientProvider>

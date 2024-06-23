@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import { convertToObject } from "typescript";
 import useWeb3 from "../../hooks/useWeb3";
 import toastr from "toastr"
+import {} from '../functions/tokensContract'
+
 
 const ShowOffer: React.FC = () => {
 
@@ -35,7 +37,7 @@ const ShowOffer: React.FC = () => {
             await estokkYamContract.methods.buy(0, price, amount).send({ from: account })
             toastr.success("Successful")
         } catch (err) {
-            console.log(err)
+            // console.log(err)
             toastr.error("Failed")
         }
     }
@@ -46,13 +48,11 @@ const ShowOffer: React.FC = () => {
     }, [offerId])
 
     useEffect(() => {
+        
         setOfferId(index)
 
     }, [])
 
-    // useEffect(() => {
-    //     console.log("Amount: ", amount)
-    // }, [price, amount])
     return (
         <div className="flex flex-col items-center justify-center w-[100%] bg-[white]">
             <p className="flex w-[80vw] bg-[#00dbe3] text-[white] text-[30px] items-center justify-center mt-20">
