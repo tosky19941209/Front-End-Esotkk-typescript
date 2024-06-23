@@ -4,6 +4,7 @@ import AllOffer from "../component/alloffer"
 import Footer from "../component/footer/footer"
 import ShowOffer from '../component/showoffer/showoffer';
 import Admin from "../component/adminpage";
+import History from "../component/history/index"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 function ProjectRouter() {
     return (
@@ -19,6 +20,7 @@ function ProjectRouter() {
                 <Routes>
                     <Route path="/" element={<AllOffer />} />
                     <Route path="/myoffer" element={<MyOffer />} />
+                    <Route path="/history" element={<History />} />
                     <Route path="/showoffer" element={<ShowOffer />} />
                     <Route path="/admin" element={<Admin />} />
                 </Routes>

@@ -28,32 +28,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
         setSearchOfferIdContent(result)
     }, [props.searchKeyWord])
 
-    const ShowTotalOffer = async () => {
-        try {
-            const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
-            for (let i = 0; i < totalOfferCount; i++) {
-                try {
-                    const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
-                    const offerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[0]).call()
-                    const buyerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[1]).call()
-                    arrayOffer.push({
-                        offerId: i,
-                        offerToken: offerToken[1],
-                        buyerToken: buyerToken[1],
-                        seller: eachOfferContent[2],
-                        buyer: eachOfferContent[3],
-                        price: eachOfferContent[4],
-                        amount: eachOfferContent[5]
-                    })
-                } catch (err) {
-                }
-            }
-            setOfferIDContent(arrayOffer)
-            setSearchOfferIdContent(arrayOffer)
-        } catch (err) {
-            // console.log("failed!")
-        }
-    }
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -107,14 +82,13 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
             </div>
 
             <div className="mt-4 mb-4 rounded-md bg-white">
-                <p className="text-center text-xl text-[#00b3ba]">Dex</p>
+                <p className="text-center text-xl text-[#00b3ba]"></p>
                 <MyOffer content={searchOfferIdContent} />
 
             </div>
             <button
                 ref={btnRefresh}
                 onClick={() => {
-                    ShowTotalOffer()
                 }}>
             </button>
         </div >
