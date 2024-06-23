@@ -34,6 +34,8 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
     const btnRefresh = useRef<HTMLButtonElement | null>(null)
     const [offerIDContent, setOfferIDContent] = useState<any>([])
     const [searchOfferIdContent, setSearchOfferIdContent] = useState<any>([])
+    const [searchType, setSearchType] = useState<any>()
+
     let arrayOffer: any = []
 
     useEffect(() => {
@@ -89,6 +91,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                         setIsBtnPush1(true);
                         setIsBtnPush2(false);
                         setIsBtnPush3(false);
+                        setSearchType("sell")
                     }}
                 />
                 <MarketBtn
@@ -98,6 +101,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                         setIsBtnPush1(false);
                         setIsBtnPush2(true);
                         setIsBtnPush3(false);
+                        setSearchType("buy")
                     }}
                 />
                 <MarketBtn
@@ -107,6 +111,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                         setIsBtnPush1(false);
                         setIsBtnPush2(false);
                         setIsBtnPush3(true);
+                        setSearchType("exchange")
                     }}
                 />
             </div>
@@ -116,7 +121,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     props.offerType === 1 && (
                         <>
                             <p className="text-center text-xl text-[#00b3ba]">Dex</p>
-                            <MyOffer content={searchOfferIdContent} />
+                            <MyOffer content={searchOfferIdContent} searchType={searchType} />
                         </>
                     )
                 }
@@ -125,7 +130,7 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     props.offerType === 2 && (
                         <>
                             <p className="text-center text-xl text-[#00b3ba]">Dex</p>
-                            <PrivateOffer content={searchOfferIdContent} />
+                            <PrivateOffer content={searchOfferIdContent} searchType={searchType} />
                         </>
                     )
                 }
