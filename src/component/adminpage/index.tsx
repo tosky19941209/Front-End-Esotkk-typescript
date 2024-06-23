@@ -1,32 +1,45 @@
 import { useEffect, useState } from "react"
 import useWeb3 from "../../hooks/useWeb3"
+import api from "../../service/axios"
 function Admin() {
     const { estokkYamContract, account, chainId } = useWeb3()
-    // const provider = new ethers.BrowserProvider(window.ethereum)
-    const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
-    const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
-    const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
-    const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
+    // const real_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
+    // const TK_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
+    // const usdc_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
+    // const wdai_token: any = "0x0f6b3cAfD5ab9bE37f8299284D7A30B93F3B76b7"
+
+    const [properties, setProperties] = useState<any>([])
+    const real_token: any = "0x25F460F2E84608EE83E93b7E36985a37D241fD1F"
+    const TK_token: any = "0xe3Bff3b3c46D1866E584F84e4eD17eE0CDef172C"
+    const usdc_token: any = "0x0170A96Cac4dd1D3dE9FB7fB19A6C10D43e663D3"
+    const wdai_token: any = "0x4069F86aDd448c60546A5363Da9215690086F8c3"
+
+
 
     const setAdmin = async () => {
         try {
             const resultofSetAdmin: any = await estokkYamContract.methods.initialize(account, "0x20B3414EccA6e848F5a4da6c5657100974b2040C").send({ from: account })
             console.log("Result of SetAmdin => ", resultofSetAdmin)
         } catch (err) {
-            console.log(err)
         }
     }
 
     const setToggleWhiteListToken = async () => {
+        const token_address: any = []
+        const token_type: any = []
 
+        api.get("/getData",)
+            .then((res) => {
+                const array = res.data.tokens
 
-        const token_address: any = [
-            real_token, TK_token, usdc_token, wdai_token
-        ]
+                array.map((item: any, index: any) => {
+                    token_address.push(item.tokenAddress)
+                    token_type.push(1)
+                })
+                console.log(token_address)
+                console.log(token_type)
+            })
 
-        const token_type: any = [
-            1, 1, 1, 1
-        ]
 
         const result: any = await estokkYamContract.methods.toggleWhitelistWithType(token_address, token_type).send({ from: account })
         console.log("Result Toggle ===>", result)
@@ -53,11 +66,15 @@ function Admin() {
     }
 
     const showOffer = async () => {
-        console.log("ShowOffer => ", await estokkYamContract.methods.showOffer(0).call())
+        console.log("ShowOffer => ", await estokkYamContract.methods.showOffer(9).call())
         console.log("Get OfferCount => ", await estokkYamContract.methods.getOfferCount().call())
         // console.log("GetTokenType => ", await estokkYamContract.methods.getTokenType(real_token).call())
     }
 
+    const OfferDelete = async () => {
+        const result: any = await estokkYamContract.methods.deleteOffer(8).send({ from: account })
+        console.log("Result => ", result)
+    }
     const Buy = async () => {
         const offer_token: any = real_token
         const buyer_token: any = usdc_token
@@ -72,7 +89,6 @@ function Admin() {
         console.log("My Accout =>", account)
         console.log("My ChainID =>", chainId)
         console.log("conract => > > > ", estokkYamContract);
-        
     }, [account, chainId, estokkYamContract])
 
     return (
@@ -125,6 +141,15 @@ function Admin() {
             >
                 GetTokenType
             </button>
+
+            <button
+                className="w-[200px] h-[50px] mr-1 ml-1 rounded text-[#00b3ba] border-[1px] border-[#00b3ba] focus:outline-none"
+                onClick={OfferDelete}
+            >
+                Delete Offer
+            </button>
+
+
 
 
 

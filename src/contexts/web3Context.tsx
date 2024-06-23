@@ -14,7 +14,7 @@ import { Web3ContextType } from '../types';
 import EstokkYamContractAbi from '../contract/EstokkYam.json';
 import { estokkYamContractAddress_Sepolia } from '../constant';
 import { estokkYamContractAddress_Chiado } from '../constant';
-import { Container } from 'postcss';
+import api from "../service/axios"
 
 declare let window: any;
 const Web3Context = createContext<Web3ContextType | null>(null);
@@ -28,8 +28,9 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     const web3 = new Web3(window.ethereum);
 
     const [provider, setProvider] = useState<ContractRunner>(defaultProvider);
-    const [estokkYamContractAddress, setEstokkYamContractAddress] = useState<any>()
     const [estokkYamContract, setEstokkYamContract] = useState<Contract>({} as Contract);
+    const [tokens, setTokens] = useState<any>()
+    const [properties, setProperties] = useState<any>()
 
     const init = useCallback(async () => {
         try {
@@ -40,13 +41,13 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
                 console.log('Connected wallet');
             }
 
-            let _estokkYamContract:any;
-            if(chainId === 10200){
+            let _estokkYamContract: any;
+            if (chainId === 10200) {
                 _estokkYamContract = new web3.eth.Contract(
                     EstokkYamContractAbi,
                     estokkYamContractAddress_Chiado
                 );
-            } else if(chainId === 11155111){
+            } else if (chainId === 11155111) {
                 _estokkYamContract = new web3.eth.Contract(
                     EstokkYamContractAbi,
                     estokkYamContractAddress_Sepolia
@@ -55,14 +56,20 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
 
             setEstokkYamContract(_estokkYamContract);
 
+            api.get("/getData")
+                .then((res) => {
+                    setTokens(res.data.tokens)
+                    setProperties(res.data.properties)
+                })
+
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, ethersProvider, provider]);
 
     useEffect(() => {
         init();
+
     }, [init]);
 
     const value = useMemo(
@@ -72,7 +79,8 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             isConnected,
             library: provider ?? signer,
             estokkYamContract,
-            estokkYamContractAddress
+            tokens,
+            properties
         }),
         [
             address,
@@ -81,10 +89,10 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             provider,
             signer,
             estokkYamContract,
-            estokkYamContractAddress
+            tokens,
+            properties
         ]
     );
-
     return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
 };
 
