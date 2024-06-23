@@ -6,6 +6,8 @@ import useWeb3 from '../../hooks/useWeb3';
 import MyOffer from './MyOffer';
 import PrivateOffer from "./PrivateOffer"
 import CreateSellOfferModal from './createOfferModal';
+import useOffers from '../../hooks/useOffer';
+
 interface OfferDashboardProps {
     offerType: number;
     searchKeyWord: string;
@@ -14,6 +16,8 @@ interface OfferDashboardProps {
 const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
 
     const { estokkYamContract, chainId } = useWeb3()
+    const { offerContents } = useOffers()
+
     const [isHover, setIsHover] = useState(false);
     const buttonClass = 'w-[100%] h-10 flex items-center border-[1px] border-[#00b3ba] text-[#00b3ba] hover:text-[white] hover:bg-[#00b3ba] rounded focus:outline-none duration-150';
 
@@ -30,7 +34,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
     const btnRefresh = useRef<HTMLButtonElement | null>(null)
     const [offerIDContent, setOfferIDContent] = useState<any>([])
     const [searchOfferIdContent, setSearchOfferIdContent] = useState<any>([])
-
     let arrayOffer: any = []
 
     useEffect(() => {
@@ -43,36 +46,10 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
         setSearchOfferIdContent(result)
     }, [props.searchKeyWord])
 
-    const ShowTotalOffer = async () => {
-        try {
-            const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
-            for (let i = 0; i < totalOfferCount; i++) {
-                try {
-                    const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
-                    const offerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[0]).call()
-                    const buyerToken: any = await estokkYamContract.methods.tokenInfo(eachOfferContent[1]).call()
-                    arrayOffer.push({
-                        offerId: i,
-                        offerToken: offerToken[1],
-                        offerTokenAddress: eachOfferContent[0],
-                        buyerToken: buyerToken[1],
-                        buyerTokenAddress: eachOfferContent[1],
-                        seller: eachOfferContent[2],
-                        buyer: eachOfferContent[3],
-                        price: eachOfferContent[4],
-                        amount: eachOfferContent[5],
-
-                    })
-                } catch (err) {
-                    // console.log("Err =>>>", err)
-                }
-            }
-            setOfferIDContent(arrayOffer)
-            setSearchOfferIdContent(arrayOffer)
-        } catch (err) {
-            // console.log("failed!")
-        }
-    }
+    useEffect(() => {
+        setOfferIDContent(offerContents)
+        setSearchOfferIdContent(offerContents)
+    }, [offerContents])
 
     useEffect(() => {
         if (createoffer === 'sell' || createoffer === 'buy' || createoffer === 'exchange') {
@@ -190,12 +167,6 @@ const OfferDashboard: React.FC<OfferDashboardProps> = (props) => {
                     setCreateOffer={setCreateOffer}
                 />
             </div>
-            <button
-                ref={btnRefresh}
-                onClick={() => {
-                    ShowTotalOffer()
-                }}>
-            </button>
         </div >
     );
 };

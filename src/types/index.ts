@@ -10,3 +10,7 @@ export type Web3ContextType = {
   tokens: any;
   properties: any;
 };
+
+export type OfferContextType = {
+  offerContents: any;
+}
