@@ -3,12 +3,12 @@ import { useLocation } from "react-router-dom";
 import { convertToObject } from "typescript";
 import useWeb3 from "../../hooks/useWeb3";
 import toastr from "toastr"
-import {} from '../functions/tokensContract'
+import { getTokenRealEstakeInfoFromMarketPlace } from '../functions/tokensContract'
 
 
 const ShowOffer: React.FC = () => {
 
-    const { estokkYamContract, account } = useWeb3()
+    const { estokkYamContract, account, tokens, properties } = useWeb3()
     const { state } = useLocation()
     const { index } = state || {};
     const [offerId, setOfferId] = useState<Number>()
@@ -17,7 +17,11 @@ const ShowOffer: React.FC = () => {
     const [seller, setSeller] = useState<any>()
     const [price, setPrice] = useState<any>()
     const [amount, setAmount] = useState<any>()
-
+    const [offerTokenAddress, setOfferTokenAddress] = useState<any>()
+    const [buyerTokenAddress, setBuyerTokenAddress] = useState<any>()
+    const [address1, setAddress1] = useState<any>("")
+    const [address2, setAddress2] = useState<any>("")
+    const [srcImg, setSrcImg] = useState<any>("")
     const Initialize = async () => {
         const offer = await estokkYamContract.methods.showOffer(offerId).call()
         const _offerToken = await estokkYamContract.methods.tokenInfo(offer[0]).call()
@@ -30,6 +34,8 @@ const ShowOffer: React.FC = () => {
         setSeller(_seller)
         setPrice(_price)
         setAmount(_amount)
+        setOfferTokenAddress(offer[0])
+        setBuyerTokenAddress(offer[1])
     }
 
     const Buy = async () => {
@@ -48,20 +54,28 @@ const ShowOffer: React.FC = () => {
     }, [offerId])
 
     useEffect(() => {
-        
         setOfferId(index)
-
     }, [])
+
+    useEffect(() => {
+        const _realEstakeTokenInfo = getTokenRealEstakeInfoFromMarketPlace(offerTokenAddress, buyerTokenAddress, tokens, properties)
+        if (!_realEstakeTokenInfo) return
+        console.log("Real => ", _realEstakeTokenInfo.evaluationImg)
+        setAddress1(_realEstakeTokenInfo.address1)
+        setAddress2(_realEstakeTokenInfo.address2)
+        setSrcImg(_realEstakeTokenInfo.evaluationImg)
+    }, [tokens, properties, offerTokenAddress, buyerTokenAddress])
 
     return (
         <div className="flex flex-col items-center justify-center w-[100%] bg-[white]">
             <p className="flex w-[80vw] bg-[#00dbe3] text-[white] text-[30px] items-center justify-center mt-20">
                 SELL
             </p>
-            <img src='./img/offerbackground.png' alt="offerbackground" className="w-[80vw]" />
+            {/* <img src='./img/offerbackground.png' alt="offerbackground" className="w-[80vw]" /> */}
+            <img src={`./realEstakeImg/` + srcImg} alt="offerbackground" className="w-[80vw]" />
             <p className="flex w-[80vw] bg-[#173039] text-[white] text-[30px] items-center justify-center">
-                20550 Townsen Blvd Bldg 2 unit 101
-                <p className="text-[30px] text-[#00dbe3] ml-3">Humble Tx 77338</p>
+                {address1}
+                <p className="text-[30px] text-[#00dbe3] ml-3">{address2}</p>
             </p>
             <div className="w-[60vw]">
                 <div className="flex flex-col items-center justify-center w-40 bg-[#173039] rounded mt-4">

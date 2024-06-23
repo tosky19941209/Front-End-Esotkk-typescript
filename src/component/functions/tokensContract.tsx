@@ -56,10 +56,10 @@ export const getCurrencyTokenAddress = (tokenName: any) => {
 }
 
 export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
-    if (_offerTokenAddress == "") return false
-    if (_buyerTokenAddress == "") return false
-    if (tokens.length === 0) return false
-    if (properties.length === 0) return false
+    if (!_offerTokenAddress) return false
+    if (!_buyerTokenAddress) return false
+    if (!tokens.length) return false
+    if (!properties.length) return false
 
     return true
 }
@@ -151,4 +151,12 @@ export const getCurrencyTokens = (tokens: any) => {
         item.tokenSymbol.toLowerCase().includes("wdai")
     )
     return currencyTokens
+}
+
+export const getTokenRealEstakeInfoFromMarketPlace = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
+    if (!isAvailable(_offerTokenAddress, _buyerTokenAddress, tokens, properties)) return
+    const propertyId = getPropertyId(_offerTokenAddress, _buyerTokenAddress, tokens, properties)
+
+    const RealEsakeToken = properties.filter((item: any) => item.id === propertyId)[0]
+    return RealEsakeToken
 }
