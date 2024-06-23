@@ -47,6 +47,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         setOfferPriceCurrency(0)
         setSellTokenName("null")
         setBuyTokenName("null")
+        setSalePrice(0)
     };
 
     const CreateOffer = async () => {
@@ -115,7 +116,11 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                     <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
                         onChange={(e) => {
                             const value = e.target.value
-                            if (value === "null") return
+                            if (value === "null") {
+                                setSellTokenName("")
+                                setSalePrice(0)
+                                return
+                            }
                             setTokenId(value)
                             setSellTokenName(getTokenSymbol(value, tokens))
                             setSellToken(getTokenAddress(value, tokens))
