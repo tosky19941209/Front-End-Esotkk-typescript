@@ -8,7 +8,9 @@ import {
     getTokenSalePrice,
     getTokenSymbol,
     getCurrencyTokenAddress,
-    defaultContractAddress
+    defaultContractAddress,
+    getCurrencyTokens,
+    getRealEstakeTokens
 } from '../functions/tokensContract';
 interface CreateOfferModalProps {
     isCreateOfferModalOpen: boolean;
@@ -34,7 +36,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     const [buyTokenName, setBuyTokenName] = useState<any>("null")
     const [salePrice, setSalePrice] = useState<any>()
     const [buyer, setBuyer] = useState<any>(defaultContractAddress)
-
+    const [realEstakeTokens, setRealEstakeTokens] = useState<any>()
+    const [currencyTokens, setCurrencyTokens] = useState<any>()
     const close = () => {
         props.setCreateOffer('none');
         props.setIsCreateOfferModalOpen(false);
@@ -83,6 +86,11 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             setBuyer(defaultContractAddress)
     }, [isCheckedPrivate])
 
+    useEffect(() => {
+        setRealEstakeTokens(getRealEstakeTokens(tokens))
+        setCurrencyTokens(getCurrencyTokens(tokens))
+    }, [tokens])
+
     return (
 
         <Dialog
@@ -108,40 +116,29 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                         onChange={(e) => {
                             const value = e.target.value
                             if (value === "null") return
-                            if (offerType === 'sell' || offerType === "exchange") {
-                                setTokenId(value)
-                                setSellTokenName(getTokenSymbol(value, tokens))
-                                setSellToken(getTokenAddress(value, tokens))
-                            }
-                            if (offerType === "buy") {
-                                setSellTokenName(value)
-                                setSellToken(getCurrencyTokenAddress(value))
-                            }
+                            setTokenId(value)
+                            setSellTokenName(getTokenSymbol(value, tokens))
+                            setSellToken(getTokenAddress(value, tokens))
+                            if (offerType === "sell")
+                                setSalePrice(getTokenSalePrice(value, tokens))
                         }}
                     >
                         <option value="null">Select</option>
                         {
 
-                            offerType == "sell" && tokens.length > 0 && tokens.map((item: any, index: any) => (
+                            offerType == "sell" && realEstakeTokens.length > 0 && realEstakeTokens.map((item: any, index: any) => (
                                 <option value={item.id}>{item.tokenSymbol}</option>
                             ))
                         }
                         {
-                            offerType == "buy" &&
-                            <>
-                                <option value="usdc">USDC</option>
-                                <option value="wdai">WDAI</option>
-                            </>
+                            offerType == "buy" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
+                                <option value={item.id}>{item.tokenSymbol}</option>
+                            ))
                         }
                         {
-                            offerType == "exchange" && tokens.length > 0 &&
-                            <>
-                                {
-                                    tokens.map((item: any, index: any) => (
-                                        <option value={item.id}>{item.tokenSymbol}</option>
-                                    ))
-                                }
-                            </>
+                            offerType == "exchange" && realEstakeTokens.length > 0 && realEstakeTokens.map((item: any, index: any) => (
+                                <option value={item.id}>{item.tokenSymbol}</option>
+                            ))
                         }
                     </select>
                 </div>
@@ -153,38 +150,34 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                             const value = e.target.value
                             if (value == "null") return
 
-                            if (offerType === "sell") setBuyerToken(getCurrencyTokenAddress(value))
-                            if (offerType === "buy" || offerType === "exchange") {
-                                setTokenId(value)
-                                setBuyerToken(getTokenAddress(value, tokens))
-                            }
-
+                            setTokenId(value)
+                            setBuyerToken(getTokenAddress(value, tokens))
                             setBuyTokenName(getTokenSymbol(value, tokens))
+                            if (offerType === "buy")
+                                setSalePrice(getTokenSalePrice(value, tokens))
                         }}
                     >
                         <option value="null">Select</option>
                         {
-                            offerType == "sell" &&
-                            <>
-                                <option value="usdc">USDC</option>
-                                <option value="wdai">WDAI</option>
-                            </>
+                            offerType == "sell" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
+                                <option value={item.id}>{item.tokenSymbol}</option>
+                            ))
                         }
                         {
-                            offerType == "buy" && tokens.length > 0 &&
+                            offerType == "buy" && realEstakeTokens.length > 0 &&
                             <>
                                 {
-                                    tokens.map((item: any, index: any) => (
+                                    realEstakeTokens.map((item: any, index: any) => (
                                         <option value={item.id}>{item.tokenSymbol}</option>
                                     ))
                                 }
                             </>
                         }
                         {
-                            offerType == "exchange" && tokens.length > 0 &&
+                            offerType == "exchange" && realEstakeTokens.length > 0 &&
                             <>
                                 {
-                                    tokens.map((item: any, index: any) => (
+                                    realEstakeTokens.map((item: any, index: any) => (
                                         <option value={item.id}>{item.tokenSymbol}</option>
                                     ))
                                 }
