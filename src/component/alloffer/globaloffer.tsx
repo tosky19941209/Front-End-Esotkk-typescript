@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useNavigate } from 'react-router-dom';
 import useWeb3 from '../../hooks/useWeb3';
-import { getOfficialYield, getOfficialPrice } from '../functions/tokensContract';
+import { getOfficialYield, getOfficialPrice, isSearchFilter } from '../functions/tokensContract';
 
 interface Column {
   id: 'offerid' | 'offertoken' | 'buyertoken' | 'officialyield' | 'offeryield' | 'yielddelta' | 'officialprice' | 'pricetoken' | 'pricedelta' | 'availablequantity';
@@ -157,7 +157,8 @@ export default function GlobalOffer(props: any) {
       const _yeidlDelta: any = (_offerYield - _officialYield) * 100 / _officialYield
       const _priceDelta: any = (_priceToken - _officialprice) / _officialprice
       const _availableQuantity: any = Number(item.amount) / Math.pow(10, 18)
-      offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
+      if (isSearchFilter(_offerTokenAddres, _buyerTokenAddres, props.searchType, tokens))
+        offerArray.push(createData(_offerId, item.offerToken, item.buyerToken, _officialYield, _offerYield, _yeidlDelta, _officialprice, _priceToken, _priceDelta, _availableQuantity))
     })
 
     setRows(offerArray)
@@ -166,7 +167,7 @@ export default function GlobalOffer(props: any) {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440, minHeight: 300 }}>
+      <TableContainer sx={{ maxHeight: 500, minHeight: 300 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

@@ -3,6 +3,7 @@ import TokenContractAbi from '../../contract/Token.json'
 import { convertToObject } from 'typescript';
 
 export const defaultContractAddress = "0x0000000000000000000000000000000000000000"
+
 export const getTokenBalance = async (tokenAddress: any, account: any) => {
     const web3 = new Web3(window.ethereum);
     const tokenContract = new web3.eth.Contract(TokenContractAbi, tokenAddress);
@@ -67,20 +68,30 @@ export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, to
 export const getPropertyId = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
 
     if (!isAvailable(_offerTokenAddress, _buyerTokenAddress, tokens, properties)) return
-
+    console.log("OfferTokenAddress => ", _offerTokenAddress)
+    console.log("BuyerTokenAddress => ", _buyerTokenAddress)
+    console.log("Tokens =>", tokens)
+    console.log("Properties =>", properties)
     const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
+    console.log("OfferToken =>", _offerToken)
+    console.log("BuyerToken =>", _buyerToken)
     let realEstateToken: any
     let currentToken: any
     if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") {
+        console.log("Offertoken is Current")
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
-    else if (_buyerToken.tokenSymbol === "wdai_token") {
+    else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
+        console.log("BuyerToken is Currency")
         realEstateToken = _offerToken
         currentToken = _buyerToken
     }
-
+    else {
+        realEstateToken = _offerToken
+    }
+    console.log("RealEstatToken =>>", realEstateToken)
     const propertyId = realEstateToken.propertyId
 
     return propertyId
@@ -98,9 +109,13 @@ export const getOfficialPrice = (_offerTokenAddress: any, _buyerTokenAddress: an
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
-    else if (_buyerToken.tokenSymbol === "wdai_token") {
+
+    else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
         realEstateToken = _offerToken
         currentToken = _buyerToken
+    }
+    else {
+        realEstateToken = _offerToken
     }
 
     return realEstateToken.purchasePrice
@@ -159,4 +174,33 @@ export const getTokenRealEstakeInfoFromMarketPlace = (_offerTokenAddress: any, _
 
     const RealEsakeToken = properties.filter((item: any) => item.id === propertyId)[0]
     return RealEsakeToken
+}
+
+export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any, searchType: any, tokens: any) => {
+
+    const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
+    const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
+
+    let realEstateToken: any
+    let currentToken: any
+    if (searchType === "sell") {
+        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token")
+            return false
+        if (_buyerToken.tokenSymbol !== "usdc_token" && _buyerToken.tokenSymbol !== "wdai_token")
+            return false
+
+        return true
+    }
+
+    if (searchType === "buy")
+        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token")
+            return true
+        else return false
+
+    if (searchType === "exchange") {
+        if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") return false
+        if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") return false
+
+        return true
+    }
 }
