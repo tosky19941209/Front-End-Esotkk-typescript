@@ -7,7 +7,6 @@ const Dashboard: React.FC = () => {
   
   return (
     <div className="flex flex-col items-center lg:items-start w-[80%]">
-      <Filter setSearchKeyWord={setSearchKeyWord} />
       <OfferDashboard offerType={offerType} searchKeyWord = {searchKeyWord} />
     </div>
   );

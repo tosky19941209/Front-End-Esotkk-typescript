@@ -72,6 +72,8 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
 
     }, [init]);
 
+
+
     const value = useMemo(
         () => ({
             account: address,
@@ -80,7 +82,7 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             library: provider ?? signer,
             estokkYamContract,
             tokens,
-            properties
+            properties,
         }),
         [
             address,
@@ -90,7 +92,7 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
             signer,
             estokkYamContract,
             tokens,
-            properties
+            properties,
         ]
     );
     return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
