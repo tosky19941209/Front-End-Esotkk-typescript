@@ -38,6 +38,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     const [buyer, setBuyer] = useState<any>(defaultContractAddress)
     const [realEstakeTokens, setRealEstakeTokens] = useState<any>()
     const [currencyTokens, setCurrencyTokens] = useState<any>()
+    const [tokenBalancesList, setTokenBalancesList] = useState<any>([])
+
     const close = () => {
         props.setCreateOffer('none');
         props.setIsCreateOfferModalOpen(false);
@@ -57,8 +59,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         }
         const _offerQuantity = Number(offerQuantity) / Math.pow(10, 18)
         if (_offerQuantity > tokenBalance) {
-            console.log("OfferQuantity =>", offerQuantity)
-            console.log("TokenQuantity =>", tokenBalance)
             toastr.info("Balance is not available.")
             return
         }
@@ -77,7 +77,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     useEffect(() => {
         if (!tokens) return
         const _getTokenBalance = async () => {
-            const _tokenAddress = getTokenAddress(tokenId, tokens)
+            const _tokenId: number = Number(tokenId)
+            const _tokenAddress = getTokenAddress(_tokenId, tokens)
             const _account = account
             try {
                 const _balance = await getTokenBalance(_tokenAddress, _account)
@@ -89,6 +90,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         _getTokenBalance()
     }, [tokenId])
 
+
+
     useEffect(() => {
         if (isCheckedPrivate === false)
             setBuyer(defaultContractAddress)
@@ -97,7 +100,31 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     useEffect(() => {
         setRealEstakeTokens(getRealEstakeTokens(tokens))
         setCurrencyTokens(getCurrencyTokens(tokens))
+
     }, [tokens])
+
+
+    useEffect(() => {
+        if (!realEstakeTokens) return
+        let _tokenBalanceList: any = []
+        realEstakeTokens.map((item: any, index: any) => {
+            const _getTokenBalance = async () => {
+                console.log("Token Id =>", typeof item.id)
+                const _tokenAddress = getTokenAddress(item.id, tokens)
+                const _account = account
+                let _balance: any = 0
+                try {
+                    _balance = await getTokenBalance(_tokenAddress, _account)
+
+                } catch (err) {
+                    _balance = 0
+                }
+                _tokenBalanceList.push(_balance.toFixed(3))
+                setTokenBalancesList(_tokenBalanceList)
+            }
+            _getTokenBalance()
+        })
+    }, [realEstakeTokens])
 
     return (
 
@@ -139,7 +166,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                         {
 
                             offerType == "sell" && realEstakeTokens.length > 0 && realEstakeTokens.map((item: any, index: any) => (
-                                <option value={item.id}>{item.tokenSymbol}</option>
+                                <option value={item.id}>{item.tokenSymbol + "    " + tokenBalancesList[index]}  </option>
                             ))
                         }
                         {
@@ -228,7 +255,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                             onChange={(e) => {
                                 if (offerType !== "exchange") {
                                     const purchasePrice = e.target.value
-                                    setSalePrice(getTokenSalePrice(tokenId, tokens))
+                                    // setSalePrice(getTokenSalePrice(tokenId, tokens))
                                     const _priceDifference = (salePrice - Number(purchasePrice)) * 100 / salePrice
 
                                     if (_priceDifference > 5 || _priceDifference < -5)

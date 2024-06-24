@@ -12,12 +12,14 @@ export const getTokenBalance = async (tokenAddress: any, account: any) => {
 }
 
 export const getTokenAddress = (_tokenId: any, tokens: any) => {
-    let _tokenAddress: any
+    let _tokenAddress: string | undefined;
+
     tokens.map((item: any, index: any) => {
-        if (String(item.id) === _tokenId) {
-            _tokenAddress = item.tokenAddress
+        if (item.id === _tokenId) {
+            _tokenAddress = String(item.tokenAddress)
         }
     })
+
     return _tokenAddress
 }
 
