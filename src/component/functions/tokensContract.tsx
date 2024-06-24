@@ -12,12 +12,14 @@ export const getTokenBalance = async (tokenAddress: any, account: any) => {
 }
 
 export const getTokenAddress = (_tokenId: any, tokens: any) => {
-    let _tokenAddress: any
+    let _tokenAddress: string | undefined;
+
     tokens.map((item: any, index: any) => {
-        if (String(item.id) === _tokenId) {
-            _tokenAddress = item.tokenAddress
+        if (item.id === _tokenId) {
+            _tokenAddress = String(item.tokenAddress)
         }
     })
+
     return _tokenAddress
 }
 
@@ -68,32 +70,22 @@ export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, to
 export const getPropertyId = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
 
     if (!isAvailable(_offerTokenAddress, _buyerTokenAddress, tokens, properties)) return
-    console.log("OfferTokenAddress => ", _offerTokenAddress)
-    console.log("BuyerTokenAddress => ", _buyerTokenAddress)
-    console.log("Tokens =>", tokens)
-    console.log("Properties =>", properties)
     const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
-    console.log("OfferToken =>", _offerToken)
-    console.log("BuyerToken =>", _buyerToken)
     let realEstateToken: any
     let currentToken: any
     if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") {
-        console.log("Offertoken is Current")
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
     else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
-        console.log("BuyerToken is Currency")
         realEstateToken = _offerToken
         currentToken = _buyerToken
     }
     else {
         realEstateToken = _offerToken
     }
-    console.log("RealEstatToken =>>", realEstateToken)
     const propertyId = realEstateToken.propertyId
-
     return propertyId
 }
 
@@ -204,3 +196,4 @@ export const isSearchFilter = (_offerTokenAddress: any, _buyerTokenAddress: any,
         return true
     }
 }
+
