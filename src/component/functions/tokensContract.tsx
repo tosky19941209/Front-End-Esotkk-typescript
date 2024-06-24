@@ -33,7 +33,6 @@ export const getTokenSymbol = (_tokenId: any, tokens: any) => {
         }
     })
     return _tokenSymbol
-
 }
 
 export const getTokenSalePrice = (_tokenId: any, tokens: any) => {
