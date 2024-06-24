@@ -55,6 +55,13 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             toastr.error("Offer Content is not available!")
             return
         }
+        const _offerQuantity = Number(offerQuantity) / Math.pow(10, 18)
+        if (_offerQuantity > tokenBalance) {
+            console.log("OfferQuantity =>", offerQuantity)
+            console.log("TokenQuantity =>", tokenBalance)
+            toastr.info("Balance is not available.")
+            return
+        }
         try {
             const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
             toastr.success("Offer is created Successfully!")
