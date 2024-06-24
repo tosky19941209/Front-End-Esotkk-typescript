@@ -18,7 +18,6 @@ export const OfferContextProvide = ({ children }: { children: React.ReactNode })
         try {
             let arrayOffer: any = []
             const totalOfferCount = await estokkYamContract.methods.getOfferCount().call()
-            console.log("Total Count =>>>", totalOfferCount)
             for (let i = 0; i < totalOfferCount; i++) {
                 try {
                     const eachOfferContent: any = await estokkYamContract.methods.showOffer(i).call()
