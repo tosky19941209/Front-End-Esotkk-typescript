@@ -60,7 +60,6 @@ const ShowOffer: React.FC = () => {
     useEffect(() => {
         const _realEstakeTokenInfo = getTokenRealEstakeInfoFromMarketPlace(offerTokenAddress, buyerTokenAddress, tokens, properties)
         if (!_realEstakeTokenInfo) return
-        console.log("Real => ", _realEstakeTokenInfo.evaluationImg)
         setAddress1(_realEstakeTokenInfo.address1)
         setAddress2(_realEstakeTokenInfo.address2)
         setSrcImg(_realEstakeTokenInfo.evaluationImg)

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import useWeb3 from '../../hooks/useWeb3';
 import toastr from 'toastr';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
     getTokenBalance,
     getTokenAddress,
@@ -39,6 +41,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     const [realEstakeTokens, setRealEstakeTokens] = useState<any>()
     const [currencyTokens, setCurrencyTokens] = useState<any>()
     const [tokenBalancesList, setTokenBalancesList] = useState<any>([])
+    const [selecTagOffer, setSelectTagOffer] = useState<any>()
+    const [selecTagBuyer, setSelectTagBuyer] = useState<any>()
 
     const close = () => {
         props.setCreateOffer('none');
@@ -52,6 +56,8 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         setSalePrice(0)
     };
 
+
+
     const CreateOffer = async () => {
         if (isPriceAvailable) {
             toastr.error("Offer Content is not available!")
@@ -62,6 +68,11 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
             toastr.info("Balance is not available.")
             return
         }
+        console.log("SellToken => ", sellToken)
+        console.log("BuyerToken => ", buyerToken)
+        console.log("Buyer => ", buyer)
+        console.log("Offer Price => ", offerPrice)
+        console.log("Offer Quantity => ", offerQuantity)
         try {
             const result: any = await estokkYamContract.methods.createOffer(sellToken, buyerToken, buyer, offerPrice, offerQuantity).send({ from: account })
             toastr.success("Offer is created Successfully!")
@@ -91,7 +102,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
     }, [tokenId])
 
 
-
     useEffect(() => {
         if (isCheckedPrivate === false)
             setBuyer(defaultContractAddress)
@@ -109,7 +119,6 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
         let _tokenBalanceList: any = []
         realEstakeTokens.map((item: any, index: any) => {
             const _getTokenBalance = async () => {
-                console.log("Token Id =>", typeof item.id)
                 const _tokenAddress = getTokenAddress(item.id, tokens)
                 const _account = account
                 let _balance: any = 0
@@ -147,9 +156,12 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                 </div>
                 <div className="flex flex-col w-[100%] mt-4">
                     <p>Offer Token</p>
-                    <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+                    <Select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+                        value={selecTagOffer}
                         onChange={(e) => {
                             const value = e.target.value
+                            setSelectTagOffer(value as String)
+
                             if (value === "null") {
                                 setSellTokenName("")
                                 setSalePrice(0)
@@ -158,71 +170,90 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                             setTokenId(value)
                             setSellTokenName(getTokenSymbol(value, tokens))
                             setSellToken(getTokenAddress(value, tokens))
-                            if (offerType === "sell")
+                            if (offerType === "sell") {
                                 setSalePrice(getTokenSalePrice(value, tokens))
+                            }
                         }}
                     >
-                        <option value="null">Select</option>
+                        {/* <MenuItem value="null">Select</MenuItem> */}
                         {
 
                             offerType == "sell" && realEstakeTokens.length > 0 && realEstakeTokens.map((item: any, index: any) => (
-                                <option value={item.id}>{item.tokenSymbol + "    " + tokenBalancesList[index]}  </option>
+                                <MenuItem value={item.id}>
+                                    <div className='flex w-[100%] justify-between'>
+                                        <p>
+                                            {String(item.tokenSymbol)}
+                                        </p>
+                                        <p>
+                                            {String(tokenBalancesList[index])}
+                                        </p>
+                                    </div>
+
+                                </MenuItem>
                             ))
                         }
                         {
                             offerType == "buy" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
-                                <option value={item.id}>{item.tokenSymbol}</option>
+                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
                             ))
                         }
                         {
                             offerType == "exchange" && realEstakeTokens.length > 0 && realEstakeTokens.map((item: any, index: any) => (
-                                <option value={item.id}>{item.tokenSymbol}</option>
+                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
                             ))
                         }
-                    </select>
+                    </Select>
                 </div>
 
                 <div className="flex flex-col w-[100%] mt-3">
                     <p>Buyer Token</p>
-                    <select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+                    <Select className="h-9 border-[2px] mt-1 border-[#00b3ba] rounded-md focus:outline-none"
+                        value={selecTagBuyer}
                         onChange={(e) => {
                             const value = e.target.value
+                            setSelectTagBuyer(value as String)
                             if (value == "null") return
 
-                            setTokenId(value)
+                            // setTokenId(value)
                             setBuyerToken(getTokenAddress(value, tokens))
                             setBuyTokenName(getTokenSymbol(value, tokens))
                             if (offerType === "buy")
                                 setSalePrice(getTokenSalePrice(value, tokens))
                         }}
                     >
-                        <option value="null">Select</option>
                         {
                             offerType == "sell" && currencyTokens.length > 0 && currencyTokens.map((item: any, index: any) => (
-                                <option value={item.id}>{item.tokenSymbol}</option>
+                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
                             ))
                         }
                         {
                             offerType == "buy" && realEstakeTokens.length > 0 &&
-                            <>
-                                {
-                                    realEstakeTokens.map((item: any, index: any) => (
-                                        <option value={item.id}>{item.tokenSymbol}</option>
-                                    ))
-                                }
-                            </>
+
+
+                            realEstakeTokens.map((item: any, index: any) => (
+                                <MenuItem value={item.id}>
+                                    <div className='flex w-[100%] justify-between'>
+                                        <p>
+                                            {String(item.tokenSymbol)}
+                                        </p>
+                                        <p>
+                                            {String(tokenBalancesList[index])}
+                                        </p>
+                                    </div>
+                                </MenuItem>
+                            ))
+
+
                         }
                         {
                             offerType == "exchange" && realEstakeTokens.length > 0 &&
-                            <>
-                                {
-                                    realEstakeTokens.map((item: any, index: any) => (
-                                        <option value={item.id}>{item.tokenSymbol}</option>
-                                    ))
-                                }
-                            </>
+
+                            realEstakeTokens.map((item: any, index: any) => (
+                                <MenuItem value={item.id}>{item.tokenSymbol}</MenuItem>
+                            ))
+
                         }
-                    </select>
+                    </Select>
                 </div>
 
                 <div className="flex flex-row w-[100%] mt-3 justify-between">
@@ -305,7 +336,7 @@ const CreateOfferModal: React.FC<CreateOfferModalProps> = (props) => {
                     <img src="./img/billing.png" alt="billing" className="w-12" />
                     <div className="ml-2">
                         <p className="font-bold text-[13px]">{getTokenSymbol(tokenId, tokens)}</p>
-                        <p className="text-[13px]">With USDC = {tokenBalance}</p>
+                        <p className="text-[13px]">With {sellTokenName} = {tokenBalance}</p>
                     </div>
                 </div>
 

@@ -28,7 +28,7 @@ export const getTokenSymbol = (_tokenId: any, tokens: any) => {
     if (!tokens) return
     let _tokenSymbol: any
     tokens.map((item: any, index: any) => {
-        if (String(item.id) === _tokenId) {
+        if (item.id === _tokenId) {
             _tokenSymbol = item.tokenSymbol
         }
     })
@@ -38,12 +38,12 @@ export const getTokenSymbol = (_tokenId: any, tokens: any) => {
 
 export const getTokenSalePrice = (_tokenId: any, tokens: any) => {
     let _tokenSalePrice: any
-
     tokens.map((item: any, index: any) => {
-        if (String(item.id) === _tokenId) {
+        if (item.id === _tokenId) {
             _tokenSalePrice = item.salePrice
         }
     })
+    console.log("Token Sale Price =>>>", _tokenSalePrice)
     return _tokenSalePrice
 }
 
@@ -70,30 +70,21 @@ export const isAvailable = (_offerTokenAddress: any, _buyerTokenAddress: any, to
 export const getPropertyId = (_offerTokenAddress: any, _buyerTokenAddress: any, tokens: any, properties: any) => {
 
     if (!isAvailable(_offerTokenAddress, _buyerTokenAddress, tokens, properties)) return
-    console.log("OfferTokenAddress => ", _offerTokenAddress)
-    console.log("BuyerTokenAddress => ", _buyerTokenAddress)
-    console.log("Tokens =>", tokens)
-    console.log("Properties =>", properties)
     const _offerToken = tokens.filter((item: any) => item.tokenAddress === _offerTokenAddress)[0]
     const _buyerToken = tokens.filter((item: any) => item.tokenAddress === _buyerTokenAddress)[0]
-    console.log("OfferToken =>", _offerToken)
-    console.log("BuyerToken =>", _buyerToken)
     let realEstateToken: any
     let currentToken: any
     if (_offerToken.tokenSymbol === "usdc_token" || _offerToken.tokenSymbol === "wdai_token") {
-        console.log("Offertoken is Current")
         realEstateToken = _buyerToken
         currentToken = _offerToken
     }
     else if (_buyerToken.tokenSymbol === "usdc_token" || _buyerToken.tokenSymbol === "wdai_token") {
-        console.log("BuyerToken is Currency")
         realEstateToken = _offerToken
         currentToken = _buyerToken
     }
     else {
         realEstateToken = _offerToken
     }
-    console.log("RealEstatToken =>>", realEstateToken)
     const propertyId = realEstateToken.propertyId
 
     return propertyId
